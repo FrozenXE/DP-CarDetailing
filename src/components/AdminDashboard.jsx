@@ -7,7 +7,6 @@ export default function AdminDashboard() {
 
   const fetchAllBookings = async () => {
     setLoading(true);
-    // Join query to get full booking context
     const { data, error } = await supabase
       .from('bookings')
       .select(`
