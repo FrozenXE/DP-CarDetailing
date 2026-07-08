@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import logo from '../assets/logo.png';
 
-export default function Navbar({ activeTab, setActiveTab, user, onSignOut }) {
+export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignOut }) {
   const [displayName, setDisplayName] = useState('');
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const loadDisplayName = async () => {
@@ -47,17 +49,32 @@ export default function Navbar({ activeTab, setActiveTab, user, onSignOut }) {
     { id: 'services', label: 'Detailing Menu' },
     { id: 'garage', label: 'My Garage' },
     { id: 'bookings', label: 'Reservations' },
+    { id: 'contact', label: 'Contact' },
+    ...(isAdmin ? [{ id: 'admin', label: 'Admin Panel' }] : []),
   ];
 
   return (
     <nav className="border-b border-slate-900 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
-        <div 
-          onClick={() => setActiveTab('home')} 
-          className="text-md font-black tracking-wider text-white cursor-pointer flex items-center gap-1"
-        >
-          APEX <span className="text-cyan-400 font-medium">STUDIO</span>
+        <div className="flex items-center gap-3">
+          <div 
+            onClick={() => setActiveTab('home')} 
+            className="text-md font-black tracking-wider text-white cursor-pointer flex items-center gap-3"
+          >
+            <img src={logo} alt="Apex Studio logo" className="h-14 w-14 object-contain" />
+            <span className="flex items-center gap-1">
+              APEX <span className="text-cyan-400 font-medium">STUDIO</span>
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="md:hidden inline-flex items-center justify-center rounded-xl border border-slate-800 bg-slate-900/95 p-2 text-slate-300 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            aria-label="Toggle navigation"
+          >
+            <span className="text-lg">{menuOpen ? '✕' : '☰'}</span>
+          </button>
         </div>
 
         <div className="hidden md:flex items-center gap-6 text-[11px] font-mono font-bold tracking-wider uppercase">
@@ -81,7 +98,7 @@ export default function Navbar({ activeTab, setActiveTab, user, onSignOut }) {
             <div className="flex items-center gap-3 animate-fade-in">
               <div className="hidden sm:flex flex-col items-end">
                 <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest font-bold">Secure Session</span>
-                <span className="text-xs text-slate-300 font-medium max-w-[140px] truncate">{displayName || 'Client'}</span>
+                <span className="text-xs text-slate-300 font-medium max-w-35 truncate">{displayName || 'Client'}</span>
               </div>
               
               <button
@@ -101,7 +118,7 @@ export default function Navbar({ activeTab, setActiveTab, user, onSignOut }) {
           ) : (
             <button
               onClick={() => setActiveTab('auth')}
-              className="bg-gradient-to-r from-cyan-950 to-slate-900 hover:from-cyan-900 hover:to-slate-850 border border-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all shadow-lg shadow-cyan-950/20 cursor-pointer flex items-center gap-1.5"
+              className="bg-linear-to-r from-cyan-950 to-slate-900 hover:from-cyan-900 hover:to-slate-850 border border-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all shadow-lg shadow-cyan-950/20 cursor-pointer flex items-center gap-1.5"
             >
               🔑 Client Portal
             </button>
@@ -111,7 +128,7 @@ export default function Navbar({ activeTab, setActiveTab, user, onSignOut }) {
       </div>
 
       {showSignOutConfirm && (
-        <div className="fixed inset-70 z-60 flex items-center justify-center  px-4 py-6 backdrop-blur-md">
+        <div className="fixed inset-0 z-60 flex items-center justify-center px-4 py-6 backdrop-blur-md">
           <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl shadow-cyan-950/30 ring-1 ring-cyan-950/30">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-red-500/20 bg-red-950/30 text-xl">
@@ -138,7 +155,7 @@ export default function Navbar({ activeTab, setActiveTab, user, onSignOut }) {
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="rounded-xl bg-gradient-to-r from-red-500 to-rose-600 px-4 py-2.5 text-xs font-black uppercase tracking-widest text-white transition hover:opacity-90 active:scale-[0.98] cursor-pointer"
+                className="rounded-xl bg-linear-to-r from-red-500 to-rose-600 px-4 py-2.5 text-xs font-black uppercase tracking-widest text-white transition hover:opacity-90 active:scale-[0.98] cursor-pointer"
               >
                 Confirm Sign Out
               </button>
@@ -148,8 +165,31 @@ export default function Navbar({ activeTab, setActiveTab, user, onSignOut }) {
       )}
 
       {showSuccessToast && (
-        <div className="fixed bottom-4 right-4 z-[70] rounded-2xl border border-emerald-500/30 bg-emerald-950/80 px-4 py-3 text-sm font-semibold text-emerald-300 shadow-lg shadow-emerald-950/30">
+        <div className="fixed bottom-4 right-4 z-70 rounded-2xl border border-emerald-500/30 bg-emerald-950/80 px-4 py-3 text-sm font-semibold text-emerald-300 shadow-lg shadow-emerald-950/30">
           Signed out successfully.
+        </div>
+      )}
+
+      {menuOpen && (
+        <div className="md:hidden border-t border-slate-900 bg-slate-950/95 px-4 py-4">
+          <div className="space-y-3">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setMenuOpen(false);
+                }}
+                className={`w-full text-left rounded-2xl px-4 py-3 text-sm font-semibold uppercase tracking-wider transition-all ${
+                  activeTab === item.id 
+                    ? 'bg-slate-900 text-cyan-400 border border-slate-800' 
+                    : 'text-slate-300 hover:bg-slate-900/80 hover:text-slate-100'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </nav>

@@ -91,7 +91,7 @@ export default function UserSettings({ user, setActiveTab }) {
         <button
           type="button"
           onClick={() => setActiveTab('auth')}
-          className="mt-5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-2 text-xs font-black uppercase tracking-widest text-slate-950"
+          className="mt-5 rounded-xl bg-linear-to-r from-cyan-400 to-blue-500 px-4 py-2 text-xs font-black uppercase tracking-widest text-slate-950"
         >
           Go to Portal
         </button>
@@ -166,7 +166,7 @@ export default function UserSettings({ user, setActiveTab }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-2.5 text-sm font-black uppercase tracking-[0.2em] text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-xl bg-linear-to-r from-cyan-400 to-blue-500 px-4 py-2.5 text-sm font-black uppercase tracking-[0.2em] text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? 'Saving...' : 'Save Settings'}
         </button>

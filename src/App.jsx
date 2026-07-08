@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from './supabaseClient';
+import './App.css';
 import Navbar from './components/Navbar';
 import StudioHome from './components/StudioHome';
 import ServicesView from './components/ServicesView';
@@ -8,75 +9,103 @@ import ReservationsView from './components/ReservationsView';
 import AuthView from './components/AuthView';
 import AdminDashboard from './components/AdminDashboard';
 import UserSettings from './components/UserSettings';
+import ContactView from './components/ContactView';
+import Footer from './components/Footer';
+import { useUserData } from './hooks/useUserData';
+
+const pathToTab = (pathname) => {
+  const clean = pathname.replace(/\/+$|^\/+/, '');
+  switch (clean) {
+    case 'services':
+      return 'services';
+    case 'garage':
+      return 'garage';
+    case 'bookings':
+      return 'bookings';
+    case 'auth':
+      return 'auth';
+    case 'settings':
+      return 'settings';
+    case 'admin':
+      return 'admin';
+    case 'contact':
+      return 'contact';
+    case '':
+      return 'home';
+    default:
+      return 'home';
+  }
+};
+
+const tabToPath = {
+  home: '/',
+  services: '/services',
+  garage: '/garage',
+  bookings: '/bookings',
+  auth: '/auth',
+  settings: '/settings',
+  admin: '/admin',
+  contact: '/contact',
+};
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('home');
-  const [user, setUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false); // Database-driven admin state
+  const [activeTab, setActiveTab] = useState(() => pathToTab(window.location.pathname));
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const [autoOpenWizard, setAutoOpenWizard] = useState(false);
+  const { user, vehicleCount, bookingCount, isAdmin } = useUserData();
 
   useEffect(() => {
-    const checkAuthStatus = async (session) => {
-      if (!session) {
-        setUser(null);
-        setIsAdmin(false);
-        return;
-      }
-      
-      setUser(session.user);
-
-      // Fetch the admin flag from the profiles table
-      const { data } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', session.user.id)
-        .single();
-      
-      setIsAdmin(data?.is_admin || false);
+    const handlePopState = () => {
+      setActiveTab(pathToTab(window.location.pathname));
     };
 
-    supabase.auth.getSession().then(({ data: { session } }) => checkAuthStatus(session));
-    
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      checkAuthStatus(session);
-    });
-    
-    return () => subscription.unsubscribe();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const handleSignOut = async () => { 
-    await supabase.auth.signOut(); 
-    setActiveTab('home'); 
+  const navigateTab = (tab, replace = false) => {
+    const path = tabToPath[tab] || '/';
+    if (window.location.pathname !== path) {
+      const method = replace ? window.history.replaceState : window.history.pushState;
+      method.call(window.history, {}, '', path);
+    }
+    setActiveTab(tab);
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigateTab('home');
   };
 
   const handleConfigurePackage = (packageId) => {
     setSelectedPackageId(packageId);
     setAutoOpenWizard(true);
-    setActiveTab('bookings');
+    navigateTab('bookings');
   };
 
   const handleOpenBookingWizard = () => {
     setSelectedPackageId(null);
     setAutoOpenWizard(true);
-    setActiveTab('bookings');
+    navigateTab('bookings');
   };
 
   return (
     <div className="min-h-screen bg-slate-950 font-sans antialiased text-slate-200">
       <Navbar 
         activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+        setActiveTab={navigateTab} 
         user={user} 
         isAdmin={isAdmin} 
         onSignOut={handleSignOut} 
       />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 page-transition" key={activeTab}>
         {activeTab === 'home' && (
           <StudioHome
-            setActiveTab={setActiveTab}
+            setActiveTab={navigateTab}
             onBookNow={handleOpenBookingWizard}
+            vehicleCount={vehicleCount}
+            bookingCount={bookingCount}
           />
         )}
         
@@ -85,12 +114,13 @@ export default function App() {
         )}
         
         {activeTab === 'garage' && (
-          <GarageView setActiveTab={setActiveTab} onScheduleSession={handleOpenBookingWizard} />
+          <GarageView user={user} setActiveTab={navigateTab} onScheduleSession={handleOpenBookingWizard} />
         )}
         
         {activeTab === 'bookings' && (
           <ReservationsView 
-            setActiveTab={setActiveTab} 
+            user={user}
+            setActiveTab={navigateTab} 
             selectedPackageId={selectedPackageId} 
             setSelectedPackageId={setSelectedPackageId} 
             autoOpenWizard={autoOpenWizard}
@@ -98,13 +128,16 @@ export default function App() {
           />
         )}
         
-        {activeTab === 'auth' && <AuthView setActiveTab={setActiveTab} />}
+        {activeTab === 'auth' && <AuthView setActiveTab={navigateTab} />}
 
-        {activeTab === 'settings' && <UserSettings user={user} setActiveTab={setActiveTab} />}
+        {activeTab === 'settings' && <UserSettings user={user} setActiveTab={navigateTab} />}
 
-        {/* Only allow access to AdminDashboard if isAdmin is true */}
+        {activeTab === 'contact' && <ContactView setActiveTab={navigateTab} />}
+
         {activeTab === 'admin' && isAdmin && <AdminDashboard />}
       </main>
+
+      <Footer setActiveTab={navigateTab} />
     </div>
   );
 }

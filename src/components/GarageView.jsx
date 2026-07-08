@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
-export default function GarageView({ setActiveTab, onScheduleSession }) {
+export default function GarageView({ user, setActiveTab, onScheduleSession }) {
   const [vehicles, setVehicles] = useState([]);
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -15,30 +14,32 @@ export default function GarageView({ setActiveTab, onScheduleSession }) {
   const [showAddForm, setShowAddForm] = useState(false);
 
   useEffect(() => {
-    async function getProfileAndVehicles() {
+    async function getVehicles() {
       try {
         setLoading(true);
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          setUser(user);
-          const { data, error } = await supabase
-            .from('vehicles')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false });
 
-          if (error) throw error;
-          setVehicles(data || []);
+        if (!user) {
+          setVehicles([]);
+          return;
         }
+
+        const { data, error } = await supabase
+          .from('vehicles')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setVehicles(data || []);
       } catch (err) {
         setErrorMsg(err.message);
       } finally {
         setLoading(false);
       }
     }
-    getProfileAndVehicles();
-  }, []);
+
+    getVehicles();
+  }, [user]);
 
   const handleAddVehicle = async (e) => {
     e.preventDefault();
@@ -110,7 +111,7 @@ export default function GarageView({ setActiveTab, onScheduleSession }) {
         </p>
         <button
           onClick={() => setActiveTab('auth')}
-          className="bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wide cursor-pointer"
+          className="bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wide cursor-pointer"
         >
           Go to Sign In Gateway
         </button>
@@ -132,7 +133,7 @@ export default function GarageView({ setActiveTab, onScheduleSession }) {
 
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all hover:shadow-lg hover:shadow-cyan-500/20 active:scale-95 cursor-pointer self-start sm:self-center"
+          className="bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all hover:shadow-lg hover:shadow-cyan-500/20 active:scale-95 cursor-pointer self-start sm:self-center"
         >
           {showAddForm ? '✕ Close Form' : '➕ Add New Car'}
         </button>
@@ -211,7 +212,7 @@ export default function GarageView({ setActiveTab, onScheduleSession }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {vehicles.map((car) => (
-            <div key={car.id} className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl relative overflow-hidden group flex flex-col justify-between space-y-6">
+            <div key={car.id} className="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl relative overflow-hidden group flex flex-col justify-between space-y-6">
               
               <div className="flex items-start justify-between relative z-10">
                 <div className="space-y-1">

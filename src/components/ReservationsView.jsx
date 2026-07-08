@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { getServicePackageById, servicePackages } from '../data/servicePackages';
 
-export default function ReservationsView({ setActiveTab, selectedPackageId, setSelectedPackageId, autoOpenWizard, setAutoOpenWizard }) {
-  const [user, setUser] = useState(null);
+export default function ReservationsView({ user, setActiveTab, selectedPackageId, setSelectedPackageId, autoOpenWizard, setAutoOpenWizard }) {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -68,40 +67,41 @@ export default function ReservationsView({ setActiveTab, selectedPackageId, setS
     async function loadBookingPipelineData() {
       try {
         setLoading(true);
-        const { data: { user } } = await supabase.auth.getUser();
 
-        if (user) {
-          setUser(user);
-
-          // 1. Fetch user's registered vehicles
-          const { data: vData } = await supabase
-            .from('vehicles')
-            .select('*')
-            .eq('user_id', user.id);
-          setMyVehicles(vData || []);
-          if (vData && vData.length > 0) setSelectedVehicle(vData[0].id);
-
-          // 2. Use the shared detailing services catalog so the reservation form matches the menu exactly
-          setServicesCatalog(servicePackages);
-
-          if (servicePackages.length > 0) {
-            setSelectedService(resolveServiceSelection(servicePackages, selectedPackageId));
-          }
-
-          // 3. Fetch user's active bookings (joining service and vehicle data!)
-          const { data: bData, error: bErr } = await supabase
-            .from('bookings')
-            .select(`
-              id, appointment_date, arrival_time_slot, status, special_instructions,
-              services ( name, base_price ),
-              vehicles ( make, model, year )
-            `)
-            .eq('user_id', user.id)
-            .order('appointment_date', { ascending: true });
-
-          if (bErr) throw bErr;
-          setMyBookings(bData || []);
+        if (!user) {
+          setMyVehicles([]);
+          setMyBookings([]);
+          return;
         }
+
+        // 1. Fetch user's registered vehicles
+        const { data: vData } = await supabase
+          .from('vehicles')
+          .select('*')
+          .eq('user_id', user.id);
+        setMyVehicles(vData || []);
+        if (vData && vData.length > 0) setSelectedVehicle(vData[0].id);
+
+        // 2. Use the shared detailing services catalog so the reservation form matches the menu exactly
+        setServicesCatalog(servicePackages);
+
+        if (servicePackages.length > 0) {
+          setSelectedService(resolveServiceSelection(servicePackages, selectedPackageId));
+        }
+
+        // 3. Fetch user's active bookings (joining service and vehicle data!)
+        const { data: bData, error: bErr } = await supabase
+          .from('bookings')
+          .select(`
+            id, appointment_date, arrival_time_slot, status, special_instructions,
+            services ( name, base_price ),
+            vehicles ( make, model, year )
+          `)
+          .eq('user_id', user.id)
+          .order('appointment_date', { ascending: true });
+
+        if (bErr) throw bErr;
+        setMyBookings(bData || []);
       } catch (err) {
         setErrorMsg(err.message);
       } finally {
@@ -109,7 +109,7 @@ export default function ReservationsView({ setActiveTab, selectedPackageId, setS
       }
     }
     loadBookingPipelineData();
-  }, []);
+  }, [selectedPackageId, user]);
 
   const validateAppointmentDate = (dateString) => {
     if (!dateString) return 'Please select an appointment date.';
@@ -217,7 +217,7 @@ export default function ReservationsView({ setActiveTab, selectedPackageId, setS
         </p>
         <button
           onClick={() => setActiveTab('auth')}
-          className="bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wide cursor-pointer"
+          className="bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wide cursor-pointer"
         >
           Access Portal
         </button>
@@ -240,7 +240,7 @@ export default function ReservationsView({ setActiveTab, selectedPackageId, setS
         {myVehicles.length > 0 && (
           <button
             onClick={() => setShowWizard(!showWizard)}
-            className="bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all hover:shadow-lg hover:shadow-cyan-500/20 active:scale-95 cursor-pointer self-start sm:self-center"
+            className="bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all hover:shadow-lg hover:shadow-cyan-500/20 active:scale-95 cursor-pointer self-start sm:self-center"
           >
             {showWizard ? '✕ Cancel Booking' : '📆 Request Appointment'}
           </button>
@@ -253,7 +253,7 @@ export default function ReservationsView({ setActiveTab, selectedPackageId, setS
       {showWizard && (
         <form onSubmit={handleCreateBooking} className="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl max-w-2xl space-y-5 animate-fade-in shadow-2xl">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wide font-mono text-cyan-400">Step Parameters</h3>
+            <h3 className="text-sm font-bold uppercase tracking-wide font-mono text-cyan-400">Step Parameters</h3>
             <button
               type="button"
               onClick={() => setShowWizard(false)}
@@ -345,7 +345,7 @@ export default function ReservationsView({ setActiveTab, selectedPackageId, setS
 
           <button 
             type="submit"
-            className="bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs uppercase tracking-widest cursor-pointer w-full"
+            className="bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs uppercase tracking-widest cursor-pointer w-full"
           >
             Transmit Secure Booking Request
           </button>
@@ -422,7 +422,7 @@ export default function ReservationsView({ setActiveTab, selectedPackageId, setS
       </div>
 
       {cancelModal.open && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm px-4">
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm px-4">
           <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl shadow-cyan-950/30">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-red-500/20 bg-red-950/30 text-xl">⚠️</div>
@@ -436,18 +436,18 @@ export default function ReservationsView({ setActiveTab, selectedPackageId, setS
               Are you sure you want to cancel this appointment? This cannot be undone.
             </div>
 
-            <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end sm:items-center">
               <button
                 type="button"
                 onClick={() => setCancelModal({ open: false, bookingId: null })}
-                className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-300 transition hover:border-slate-600 hover:text-white cursor-pointer"
+                className="w-full sm:w-auto rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-300 transition hover:border-slate-600 hover:text-white cursor-pointer"
               >
                 Keep Appointment
               </button>
               <button
                 type="button"
                 onClick={() => handleCancelBooking(cancelModal.bookingId)}
-                className="rounded-xl bg-gradient-to-r from-red-500 to-rose-600 px-4 py-2.5 text-xs font-black uppercase tracking-widest text-white transition hover:opacity-90 active:scale-[0.98] cursor-pointer"
+                className="w-full sm:w-auto rounded-xl bg-linear-to-r from-red-500 to-rose-600 px-4 py-2.5 text-xs font-black uppercase tracking-widest text-white transition hover:opacity-90 active:scale-[0.98] cursor-pointer"
               >
                 Confirm Cancel
               </button>

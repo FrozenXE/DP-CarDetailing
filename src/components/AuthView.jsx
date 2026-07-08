@@ -90,7 +90,7 @@ export default function AuthView({ setActiveTab }) {
         </div>
       )}
 
-      <div className="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+      <div className="bg-linear-to-b from-slate-900 to-slate-950 border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
         
         <div className="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-900 mb-6 font-mono text-[10px] font-bold">
           <button
@@ -166,7 +166,7 @@ export default function AuthView({ setActiveTab }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black py-3 rounded-xl text-xs uppercase tracking-widest mt-6 cursor-pointer hover:shadow-lg hover:shadow-cyan-500/10 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-black py-3 rounded-xl text-xs uppercase tracking-widest mt-6 cursor-pointer hover:shadow-lg hover:shadow-cyan-500/10 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Processing Gateway...' : isSignUp ? 'Initialize Studio Account' : 'Authenticate Gateway'}
           </button>

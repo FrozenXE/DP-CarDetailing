@@ -31,7 +31,7 @@ export default function ServicesView({ onConfigurePackage }) {
                 alt={pkg.name} 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter brightness-90"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+              <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
               
               <div className="absolute top-4 left-4 z-10 flex flex-col items-start gap-2">
                 <span className="text-[9px] font-mono font-black uppercase tracking-widest bg-cyan-400 text-slate-950 px-2.5 py-1 rounded-md shadow-md">
@@ -44,7 +44,7 @@ export default function ServicesView({ onConfigurePackage }) {
               </div>
             </div>
 
-            <div className="p-6 sm:p-8 flex-grow flex flex-col justify-between space-y-6">
+            <div className="p-6 sm:p-8 grow flex flex-col justify-between space-y-6">
               <div className="space-y-2">
                 <div className="flex items-baseline justify-between gap-2">
                   <h2 className="text-lg sm:text-xl font-black text-white group-hover:text-cyan-400 transition-colors">
@@ -69,7 +69,7 @@ export default function ServicesView({ onConfigurePackage }) {
               <div className="pt-4">
                 <button 
                   onClick={() => onConfigurePackage(pkg.id)}
-                  className="w-full text-center bg-slate-900 group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-blue-500 text-slate-300 group-hover:text-slate-950 font-bold py-3 px-4 rounded-xl text-xs uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer border border-slate-800 group-hover:border-transparent active:scale-[0.99]"
+                  className="w-full text-center bg-slate-900 group-hover:bg-linear-to-r group-hover:from-cyan-400 group-hover:to-blue-500 text-slate-300 group-hover:text-slate-950 font-bold py-3 px-4 rounded-xl text-xs uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer border border-slate-800 group-hover:border-transparent active:scale-[0.99]"
                 >
                   Configure This Package
                 </button>

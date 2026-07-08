@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
+const statusStyles = {
+  pending: 'bg-amber-400',
+  active: 'bg-emerald-400',
+  curing: 'bg-sky-400',
+  completed: 'bg-violet-400',
+  cancelled: 'bg-red-400',
+  default: 'bg-slate-500',
+};
+
 export default function AdminDashboard() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [statusUpdates, setStatusUpdates] = useState({});
 
   const fetchAllBookings = async () => {
     setLoading(true);
@@ -23,16 +33,28 @@ export default function AdminDashboard() {
 
   useEffect(() => { fetchAllBookings(); }, []);
 
-  const updateStatus = async (id, status) => {
-    await supabase.from('bookings').update({ status }).eq('id', id);
-    fetchAllBookings(); // Refresh list
+  const handleStatusChange = (id, newStatus) => {
+    setStatusUpdates((prev) => ({ ...prev, [id]: newStatus }));
+  };
+
+  const confirmStatusUpdate = async (id) => {
+    const newStatus = statusUpdates[id];
+    if (!newStatus) return;
+
+    await supabase.from('bookings').update({ status: newStatus }).eq('id', id);
+    setStatusUpdates((prev) => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+    fetchAllBookings();
   };
 
   return (
     <div className="text-slate-100 space-y-6">
       <h2 className="text-2xl font-black">🛡️ Studio Admin Ledger</h2>
-      <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
-        <table className="w-full text-left">
+      <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 overflow-x-auto">
+        <table className="min-w-[640px] w-full text-left">
           <thead>
             <tr className="text-slate-500 text-[10px] uppercase tracking-widest font-bold">
               <th className="p-3">Client</th>
@@ -42,25 +64,47 @@ export default function AdminDashboard() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {bookings.map(b => (
-              <tr key={b.id} className="text-xs">
-                <td className="p-3">{b.profiles?.full_name}</td>
-                <td className="p-3">{b.vehicles?.make} {b.vehicles?.model}</td>
-                <td className="p-3">{b.services?.name}</td>
-                <td className="p-3">
-                  <select 
-                    value={b.status} 
-                    onChange={(e) => updateStatus(b.id, e.target.value)}
-                    className="bg-slate-800 p-1 rounded border border-slate-700"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="active">Active</option>
-                    <option value="curing">Curing</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
+            {bookings.map((b) => {
+              const selectedStatus = statusUpdates[b.id] ?? b.status;
+              const showConfirm = statusUpdates[b.id] && statusUpdates[b.id] !== b.status;
+              const badgeClass = statusStyles[selectedStatus] || statusStyles.default;
+
+              return (
+                <tr key={b.id} className="text-xs align-middle">
+                  <td className="p-3">{b.profiles?.full_name}</td>
+                  <td className="p-3">{b.vehicles?.make} {b.vehicles?.model}</td>
+                  <td className="p-3">{b.services?.name}</td>
+                  <td className="p-3">
+                    <div className="flex items-center gap-3">
+                      <span className={`h-2.5 w-2.5 rounded-full ${badgeClass}`}></span>
+                      <select
+                        value={selectedStatus}
+                        onChange={(e) => handleStatusChange(b.id, e.target.value)}
+                        className="bg-slate-800 text-slate-200 p-2 rounded-lg border border-slate-700"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="active">Active</option>
+                        <option value="curing">Curing</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </div>
+                  </td>
+                  <td className="p-3">
+                    {showConfirm ? (
+                      <button
+                        onClick={() => confirmStatusUpdate(b.id)}
+                        className="rounded-lg bg-cyan-500 px-3 py-2 text-[11px] font-semibold uppercase tracking-widest text-slate-950 transition hover:bg-cyan-400"
+                      >
+                        Confirm
+                      </button>
+                    ) : (
+                      <span className="text-[10px] text-slate-500 uppercase tracking-widest">No change</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
