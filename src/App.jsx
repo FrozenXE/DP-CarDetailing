@@ -94,8 +94,6 @@ export default function App() {
       <Navbar 
         activeTab={activeTab} 
         setActiveTab={navigateTab} 
-        user={user} 
-        isAdmin={isAdmin} 
         onSignOut={handleSignOut} 
       />
       
@@ -130,7 +128,7 @@ export default function App() {
         
         {activeTab === 'auth' && <AuthView setActiveTab={navigateTab} />}
 
-        {activeTab === 'settings' && <UserSettings user={user} setActiveTab={navigateTab} />}
+        {activeTab === 'settings' && <UserSettings setActiveTab={navigateTab} />}
 
         {activeTab === 'contact' && <ContactView setActiveTab={navigateTab} />}
 

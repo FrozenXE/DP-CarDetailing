@@ -3,6 +3,7 @@ import { supabase } from '../supabaseClient';
 
 export function useUserData() {
   const [user, setUser] = useState(null);
+  const [fullName, setFullName] = useState('');
   const [vehicleCount, setVehicleCount] = useState(null);
   const [bookingCount, setBookingCount] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -14,6 +15,7 @@ export function useUserData() {
     const loadUserData = async (session) => {
       if (!session?.user) {
         setUser(null);
+        setFullName('');
         setIsAdmin(false);
         setVehicleCount(null);
         setBookingCount(null);
@@ -25,7 +27,7 @@ export function useUserData() {
       setUser(session.user);
 
       const [profileResult, vehicleCountResult, bookingCountResult] = await Promise.all([
-        supabase.from('profiles').select('is_admin').eq('id', session.user.id).single(),
+        supabase.from('profiles').select('is_admin, full_name').eq('id', session.user.id).single(),
         supabase.from('vehicles').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id),
         supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id),
       ]);
@@ -35,6 +37,16 @@ export function useUserData() {
       }
 
       setIsAdmin(profileResult.data?.is_admin || false);
+      
+      // Set full_name with fallback logic
+      if (profileResult.data?.full_name) {
+        setFullName(profileResult.data.full_name);
+      } else if (session.user.user_metadata?.full_name) {
+        setFullName(session.user.user_metadata.full_name);
+      } else {
+        setFullName(session.user.email?.split('@')[0] || 'Client');
+      }
+      
       setVehicleCount(vehicleCountResult.error ? 0 : vehicleCountResult.count ?? 0);
       setBookingCount(bookingCountResult.error ? 0 : bookingCountResult.count ?? 0);
       setLoading(false);
@@ -51,5 +63,5 @@ export function useUserData() {
     return () => subscription?.unsubscribe();
   }, []);
 
-  return { user, vehicleCount, bookingCount, isAdmin, loading };
+  return { user, fullName, vehicleCount, bookingCount, isAdmin, loading };
 }

@@ -1,37 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { useUserData } from '../hooks/useUserData';
 import logo from '../assets/logo.png';
 
-export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignOut }) {
-  const [displayName, setDisplayName] = useState('');
+export default function Navbar({ activeTab, setActiveTab, onSignOut }) {
+  const { user, fullName, isAdmin } = useUserData();
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const loadDisplayName = async () => {
-      if (!user?.id) {
-        setDisplayName('');
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('id', user.id)
-        .single();
-
-      if (!error && data?.full_name) {
-        setDisplayName(data.full_name);
-      } else if (user.user_metadata?.full_name) {
-        setDisplayName(user.user_metadata.full_name);
-      } else {
-        setDisplayName(user.email?.split('@')[0] || 'Client');
-      }
-    };
-
-    loadDisplayName();
-  }, [user?.id, user?.email]);
   
   const handleSignOut = async () => {
     setShowSignOutConfirm(false);
@@ -67,14 +43,6 @@ export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignO
               APEX <span className="text-cyan-400 font-medium">STUDIO</span>
             </span>
           </div>
-          <button
-            type="button"
-            onClick={() => setMenuOpen((open) => !open)}
-            className="md:hidden inline-flex items-center justify-center rounded-xl border border-slate-800 bg-slate-900/95 p-2 text-slate-300 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            aria-label="Toggle navigation"
-          >
-            <span className="text-lg">{menuOpen ? '✕' : '☰'}</span>
-          </button>
         </div>
 
         <div className="hidden md:flex items-center gap-6 text-[11px] font-mono font-bold tracking-wider uppercase">
@@ -94,23 +62,32 @@ export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignO
         </div>
 
         <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="md:hidden inline-flex items-center justify-center rounded-xl border border-slate-800 bg-slate-900/95 p-2 text-slate-300 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            aria-label="Toggle navigation"
+          >
+            <span className="text-lg">{menuOpen ? '✕' : '☰'}</span>
+          </button>
+
           {user ? (
             <div className="flex items-center gap-3 animate-fade-in">
               <div className="hidden sm:flex flex-col items-end">
                 <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest font-bold">Secure Session</span>
-                <span className="text-xs text-slate-300 font-medium max-w-35 truncate">{displayName || 'Client'}</span>
+                <span className="text-xs text-slate-300 font-medium max-w-35 truncate">{fullName || 'Client'}</span>
               </div>
               
               <button
                 onClick={() => setActiveTab('settings')}
-                className="bg-slate-900 hover:bg-cyan-950/40 border border-slate-850 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-300 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-md"
+                className="hidden md:block bg-slate-900 hover:bg-cyan-950/40 border border-slate-850 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-300 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-md"
               >
                 ⚙ Settings
               </button>
 
               <button
                 onClick={() => setShowSignOutConfirm(true)}
-                className="bg-slate-900 hover:bg-red-950/40 border border-slate-850 hover:border-red-900/50 text-slate-400 hover:text-red-400 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-md"
+                className="hidden md:block bg-slate-900 hover:bg-red-950/40 border border-slate-850 hover:border-red-900/50 text-slate-400 hover:text-red-400 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-md"
               >
                 Sign Out
               </button>
@@ -189,6 +166,29 @@ export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignO
                 {item.label}
               </button>
             ))}
+            {user && (
+              <>
+                <button
+                  onClick={() => {
+                    setActiveTab('settings');
+                    setMenuOpen(false);
+                  }}
+                  className={`w-full text-left rounded-2xl px-4 py-3 text-sm font-semibold uppercase tracking-wider transition-all ${
+                    activeTab === 'settings' 
+                      ? 'bg-slate-900 text-cyan-400 border border-slate-800' 
+                      : 'text-slate-300 hover:bg-slate-900/80 hover:text-slate-100'
+                  }`}
+                >
+                  ⚙ Settings
+                </button>
+                <button
+                  onClick={() => setShowSignOutConfirm(true)}
+                  className="w-full text-left rounded-2xl px-4 py-3 text-sm font-semibold uppercase tracking-wider transition-all text-red-400 hover:bg-red-950/30"
+                >
+                  🔒 Sign Out
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -1,44 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { useUserData } from '../hooks/useUserData';
 
-export default function UserSettings({ user, setActiveTab }) {
+export default function UserSettings({ setActiveTab }) {
+  const { user, fullName: initialFullName } = useUserData();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
-    const loadProfile = async () => {
-      if (!user?.id) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', user.id)
-          .single();
-
-        if (profileError && profileError.code !== 'PGRST116') {
-          throw profileError;
-        }
-
-        setFullName(profileData?.full_name || '');
-        setEmail(user.email || '');
-      } catch (error) {
-        setMessage({ type: 'error', text: error.message || 'Unable to load profile.' });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProfile();
-  }, [user?.id, user?.email]);
+    if (user) {
+      setFullName(initialFullName || '');
+      setEmail(user.email || '');
+    }
+  }, [user, initialFullName]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -101,12 +79,21 @@ export default function UserSettings({ user, setActiveTab }) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 rounded-3xl border border-slate-800 bg-slate-900/60 p-6 shadow-2xl shadow-cyan-950/20 sm:p-8">
-      <div className="space-y-2">
-        <span className="rounded-full border border-cyan-500/20 bg-cyan-950/30 px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-cyan-400">
-          User Configuration
-        </span>
-        <h2 className="text-2xl font-black text-white">Account Settings</h2>
-        <p className="text-sm text-slate-400">Update your profile information and secure your account password.</p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-2">
+          <span className="rounded-full border border-cyan-500/20 bg-cyan-950/30 px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-cyan-400">
+            User Configuration
+          </span>
+          <h2 className="text-2xl font-black text-white">Account Settings</h2>
+          <p className="text-sm text-slate-400">Update your profile information and secure your account password.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setActiveTab('home')}
+          className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-semibold uppercase tracking-wide text-slate-300 transition hover:border-slate-600 hover:text-white"
+        >
+          ← Back
+        </button>
       </div>
 
       {message.text && (

@@ -15,7 +15,7 @@ export default function ContactView({ setActiveTab }) {
       `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nMessage:\n${message}`
     );
 
-    window.location.href = `mailto:apexstudio@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:apexstudio404@gmail.com?subject=${subject}&body=${body}`;
     setSubmitted(true);
   };
 
