@@ -57,24 +57,14 @@ export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignO
     <nav className="border-b border-slate-900 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
-        <div className="flex items-center gap-3">
-          <div 
-            onClick={() => setActiveTab('home')} 
-            className="text-md font-black tracking-wider text-white cursor-pointer flex items-center gap-3"
-          >
-            <img src={logo} alt="Apex Studio logo" className="h-14 w-14 object-contain" />
-            <span className="flex items-center gap-1">
-              APEX <span className="text-cyan-400 font-medium">STUDIO</span>
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setMenuOpen((open) => !open)}
-            className="md:hidden inline-flex items-center justify-center rounded-xl border border-slate-800 bg-slate-900/95 p-2 text-slate-300 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            aria-label="Toggle navigation"
-          >
-            <span className="text-lg">{menuOpen ? '✕' : '☰'}</span>
-          </button>
+        <div 
+          onClick={() => setActiveTab('home')} 
+          className="text-md font-black tracking-wider text-white cursor-pointer flex items-center gap-3"
+        >
+          <img src={logo} alt="Apex Studio logo" className="h-14 w-14 object-contain" />
+          <span className="flex items-center gap-1">
+            APEX <span className="text-cyan-400 font-medium">STUDIO</span>
+          </span>
         </div>
 
         <div className="hidden md:flex items-center gap-6 text-[11px] font-mono font-bold tracking-wider uppercase">
@@ -94,35 +84,46 @@ export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignO
         </div>
 
         <div className="flex items-center gap-4">
-          {user ? (
-            <div className="flex items-center gap-3 animate-fade-in">
-              <div className="hidden sm:flex flex-col items-end">
-                <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest font-bold">Secure Session</span>
-                <span className="text-xs text-slate-300 font-medium max-w-35 truncate">{displayName || 'Client'}</span>
-              </div>
-              
-              <button
-                onClick={() => setActiveTab('settings')}
-                className="bg-slate-900 hover:bg-cyan-950/40 border border-slate-850 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-300 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-md"
-              >
-                ⚙ Settings
-              </button>
+          <div className="hidden md:flex items-center gap-4">
+            {user ? (
+              <div className="flex items-center gap-3 animate-fade-in">
+                <div className="flex flex-col items-end">
+                  <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest font-bold">Secure Session</span>
+                  <span className="text-xs text-slate-300 font-medium max-w-35 truncate">{displayName || 'Client'}</span>
+                </div>
+                
+                <button
+                  onClick={() => setActiveTab('settings')}
+                  className="bg-slate-900 hover:bg-cyan-950/40 border border-slate-850 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-300 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-md"
+                >
+                  ⚙ Settings
+                </button>
 
+                <button
+                  onClick={() => setShowSignOutConfirm(true)}
+                  className="bg-slate-900 hover:bg-red-950/40 border border-slate-850 hover:border-red-900/50 text-slate-400 hover:text-red-400 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-md"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
               <button
-                onClick={() => setShowSignOutConfirm(true)}
-                className="bg-slate-900 hover:bg-red-950/40 border border-slate-850 hover:border-red-900/50 text-slate-400 hover:text-red-400 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-md"
+                onClick={() => setActiveTab('auth')}
+                className="bg-linear-to-r from-cyan-950 to-slate-900 hover:from-cyan-900 hover:to-slate-850 border border-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all shadow-lg shadow-cyan-950/20 cursor-pointer flex items-center gap-1.5"
               >
-                Sign Out
+                🔑 Client Portal
               </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setActiveTab('auth')}
-              className="bg-linear-to-r from-cyan-950 to-slate-900 hover:from-cyan-900 hover:to-slate-850 border border-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all shadow-lg shadow-cyan-950/20 cursor-pointer flex items-center gap-1.5"
-            >
-              🔑 Client Portal
-            </button>
-          )}
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="md:hidden inline-flex items-center justify-center rounded-xl border border-slate-800 bg-slate-900/95 p-2 text-slate-300 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            aria-label="Toggle navigation"
+          >
+            <span className="text-lg">{menuOpen ? '✕' : '☰'}</span>
+          </button>
         </div>
 
       </div>
@@ -189,6 +190,50 @@ export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignO
                 {item.label}
               </button>
             ))}
+            
+            <div className="pt-4 mt-2 border-t border-slate-900">
+              {user ? (
+                <div className="space-y-3">
+                  <div className="px-4 py-2 flex flex-col bg-slate-900/50 rounded-2xl border border-slate-900">
+                    <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest font-bold">Secure Session</span>
+                    <span className="text-sm text-slate-300 font-medium truncate">{displayName || 'Client'}</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => {
+                        setActiveTab('settings');
+                        setMenuOpen(false);
+                      }}
+                      className="w-full justify-center bg-slate-900 hover:bg-cyan-950/40 border border-slate-850 text-slate-300 font-mono text-xs font-bold uppercase tracking-wider py-3 rounded-2xl transition-all cursor-pointer shadow-md flex items-center gap-1"
+                    >
+                      ⚙ Settings
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setShowSignOutConfirm(true);
+                      }}
+                      className="w-full justify-center bg-slate-900 hover:bg-red-950/40 border border-slate-850 text-slate-400 font-mono text-xs font-bold uppercase tracking-wider py-3 rounded-2xl transition-all cursor-pointer shadow-md"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setActiveTab('auth');
+                    setMenuOpen(false);
+                  }}
+                  className="w-full justify-center bg-linear-to-r from-cyan-950 to-slate-900 border border-cyan-500/20 text-cyan-400 font-mono text-xs font-bold uppercase tracking-widest py-3.5 rounded-2xl transition-all shadow-lg shadow-cyan-950/20 cursor-pointer flex items-center gap-1.5"
+                >
+                  🔑 Client Portal
+                </button>
+              )}
+            </div>
+
           </div>
         </div>
       )}
