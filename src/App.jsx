@@ -55,12 +55,22 @@ export default function App() {
   const { user, vehicleCount, bookingCount, isAdmin } = useUserData();
 
   useEffect(() => {
-    const handlePopState = () => {
-      setActiveTab(pathToTab(window.location.pathname));
-    };
+    const hash = window.location.hash;
+    const searchParams = new URLSearchParams(window.location.search);
+    
+    if (hash.includes('type=recovery') || searchParams.get('mode') === 'update-password') {
+      navigateTab('auth');
+    }
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        navigateTab('auth');
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const navigateTab = (tab, replace = false) => {
