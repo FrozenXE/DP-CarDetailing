@@ -1,13 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
-import { useUserData } from '../hooks/useUserData';
 import logo from '../assets/logo.png';
 
-export default function Navbar({ activeTab, setActiveTab, onSignOut }) {
-  const { user, fullName, isAdmin } = useUserData();
+export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignOut }) {
+  const [displayName, setDisplayName] = useState('');
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const loadDisplayName = async () => {
+      if (!user?.id) {
+        setDisplayName('');
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', user.id)
+        .single();
+
+      if (!error && data?.full_name) {
+        setDisplayName(data.full_name);
+      } else if (user.user_metadata?.full_name) {
+        setDisplayName(user.user_metadata.full_name);
+      } else {
+        setDisplayName(user.email?.split('@')[0] || 'Client');
+      }
+    };
+
+    loadDisplayName();
+  }, [user?.id, user?.email]);
   
   const handleSignOut = async () => {
     setShowSignOutConfirm(false);
