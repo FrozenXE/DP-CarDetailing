@@ -1,37 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { useUserData } from '../hooks/useUserData';
 import logo from '../assets/logo.png';
 
-export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignOut }) {
-  const [displayName, setDisplayName] = useState('');
+export default function Navbar({ activeTab, setActiveTab, onSignOut }) {
+  const { user, fullName, isAdmin } = useUserData();
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const loadDisplayName = async () => {
-      if (!user?.id) {
-        setDisplayName('');
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('id', user.id)
-        .single();
-
-      if (!error && data?.full_name) {
-        setDisplayName(data.full_name);
-      } else if (user.user_metadata?.full_name) {
-        setDisplayName(user.user_metadata.full_name);
-      } else {
-        setDisplayName(user.email?.split('@')[0] || 'Client');
-      }
-    };
-
-    loadDisplayName();
-  }, [user?.id, user?.email]);
   
   const handleSignOut = async () => {
     setShowSignOutConfirm(false);
@@ -89,7 +65,7 @@ export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignO
               <div className="flex items-center gap-3 animate-fade-in">
                 <div className="flex flex-col items-end">
                   <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest font-bold">Secure Session</span>
-                  <span className="text-xs text-slate-300 font-medium max-w-35 truncate">{displayName || 'Client'}</span>
+                  <span className="text-xs text-slate-300 font-medium max-w-35 truncate">{ fullName || 'Client'}</span>
                 </div>
                 
                 <button
@@ -129,8 +105,7 @@ export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignO
       </div>
 
       {showSignOutConfirm && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center px-4 py-6 backdrop-blur-md">
-          <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl shadow-cyan-950/30 ring-1 ring-cyan-950/30">
+          <div className="fixed inset-0 z-[9999] flex min-h-screen items-center justify-center bg-black/40 backdrop-blur-md p-4">          <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl shadow-cyan-950/30 ring-1 ring-cyan-950/30">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-red-500/20 bg-red-950/30 text-xl">
                 🔒
@@ -196,7 +171,7 @@ export default function Navbar({ activeTab, setActiveTab, user, isAdmin, onSignO
                 <div className="space-y-3">
                   <div className="px-4 py-2 flex flex-col bg-slate-900/50 rounded-2xl border border-slate-900">
                     <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest font-bold">Secure Session</span>
-                    <span className="text-sm text-slate-300 font-medium truncate">{displayName || 'Client'}</span>
+                    <span className="text-sm text-slate-300 font-medium truncate">{fullname || 'Client'}</span>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-2">

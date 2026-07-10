@@ -12,7 +12,18 @@ export default function StudioHome({
   const [openFaq, setOpenFaq] = useState(null);
 
   const [sliderPosition, setSliderPosition] = useState(50);
+  const handleBookNow = () => {
+    if (vehicleCount === 0) {
+      setActiveTab('garage');
+      return;
+    }
 
+    if (onBookNow) {
+      onBookNow();
+    } else {
+      setActiveTab('bookings');
+    }
+  };
   return (
     <div className="space-y-16 pb-12 pl-4 pr-4 animate-fade-in text-slate-100">
       
@@ -49,7 +60,7 @@ export default function StudioHome({
 
           <div className="pt-4 flex flex-wrap gap-4">
             <button 
-              onClick={() => (onBookNow ? onBookNow() : setActiveTab('bookings'))} 
+              onClick={handleBookNow}
               className="bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer text-sm"
             >
               Book Studio Appointment
@@ -257,7 +268,7 @@ export default function StudioHome({
         </div>
         <div className="pt-2 relative z-10">
           <button 
-            onClick={() => (onBookNow ? onBookNow() : setActiveTab('bookings'))}
+            onClick={handleBookNow}
             className="bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold px-8 py-3 rounded-xl shadow-xl shadow-cyan-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all text-xs tracking-wider uppercase cursor-pointer"
           >
             Configure Appointment Now
