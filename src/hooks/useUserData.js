@@ -3,6 +3,7 @@ import { supabase } from '../supabaseClient';
 
 export function useUserData() {
   const [user, setUser] = useState(null);
+  const [fullName, setFullName] = useState('');
   const [vehicleCount, setVehicleCount] = useState(null);
   const [bookingCount, setBookingCount] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -14,6 +15,7 @@ export function useUserData() {
     const loadUserData = async (session) => {
       if (!session?.user) {
         setUser(null);
+        setFullName('');
         setIsAdmin(false);
         setVehicleCount(null);
         setBookingCount(null);
@@ -24,23 +26,46 @@ export function useUserData() {
       setLoading(true);
       setUser(session.user);
 
-      const [profileResult, vehicleCountResult, bookingCountResult] = await Promise.all([
-        supabase.from('profiles').select('is_admin').eq('id', session.user.id).single(),
-        supabase.from('vehicles').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id),
-        supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id),
-      ]);
+      const [profileResult, vehicleCountResult, bookingCountResult] =
+        await Promise.all([
+          supabase
+            .from('profiles')
+            .select('full_name, is_admin')
+            .eq('id', session.user.id)
+            .single(),
+
+          supabase
+            .from('vehicles')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', session.user.id),
+
+          supabase
+            .from('bookings')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', session.user.id),
+        ]);
 
       if (profileResult.error) {
         console.warn('useUserData profile error', profileResult.error);
       }
 
+      setFullName(profileResult.data?.full_name || '');
       setIsAdmin(profileResult.data?.is_admin || false);
-      setVehicleCount(vehicleCountResult.error ? 0 : vehicleCountResult.count ?? 0);
-      setBookingCount(bookingCountResult.error ? 0 : bookingCountResult.count ?? 0);
+
+      setVehicleCount(
+        vehicleCountResult.error ? 0 : vehicleCountResult.count ?? 0
+      );
+
+      setBookingCount(
+        bookingCountResult.error ? 0 : bookingCountResult.count ?? 0
+      );
+
       setLoading(false);
     };
 
-    supabase.auth.getSession().then(({ data: { session } }) => loadUserData(session));
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => loadUserData(session));
 
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       loadUserData(session);
@@ -51,5 +76,12 @@ export function useUserData() {
     return () => subscription?.unsubscribe();
   }, []);
 
-  return { user, vehicleCount, bookingCount, isAdmin, loading };
+  return {
+    user,
+    fullName,
+    vehicleCount,
+    bookingCount,
+    isAdmin,
+    loading,
+  };
 }
