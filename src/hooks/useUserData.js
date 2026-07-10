@@ -26,24 +26,11 @@ export function useUserData() {
       setLoading(true);
       setUser(session.user);
 
-      const [profileResult, vehicleCountResult, bookingCountResult] =
-        await Promise.all([
-          supabase
-            .from('profiles')
-            .select('full_name, is_admin')
-            .eq('id', session.user.id)
-            .single(),
-
-          supabase
-            .from('vehicles')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', session.user.id),
-
-          supabase
-            .from('bookings')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', session.user.id),
-        ]);
+      const [profileResult, vehicleCountResult, bookingCountResult] = await Promise.all([
+        supabase.from('profiles').select('is_admin, full_name').eq('id', session.user.id).single(),
+        supabase.from('vehicles').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id),
+        supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id),
+      ]);
 
       if (profileResult.error) {
         console.warn('useUserData profile error', profileResult.error);
@@ -51,15 +38,18 @@ export function useUserData() {
 
       setFullName(profileResult.data?.full_name || '');
       setIsAdmin(profileResult.data?.is_admin || false);
-
-      setVehicleCount(
-        vehicleCountResult.error ? 0 : vehicleCountResult.count ?? 0
-      );
-
-      setBookingCount(
-        bookingCountResult.error ? 0 : bookingCountResult.count ?? 0
-      );
-
+      
+      // Set full_name with fallback logic
+      if (profileResult.data?.full_name) {
+        setFullName(profileResult.data.full_name);
+      } else if (session.user.user_metadata?.full_name) {
+        setFullName(session.user.user_metadata.full_name);
+      } else {
+        setFullName(session.user.email?.split('@')[0] || 'Client');
+      }
+      
+      setVehicleCount(vehicleCountResult.error ? 0 : vehicleCountResult.count ?? 0);
+      setBookingCount(bookingCountResult.error ? 0 : bookingCountResult.count ?? 0);
       setLoading(false);
     };
 
@@ -76,12 +66,5 @@ export function useUserData() {
     return () => subscription?.unsubscribe();
   }, []);
 
-  return {
-    user,
-    fullName,
-    vehicleCount,
-    bookingCount,
-    isAdmin,
-    loading,
-  };
+  return { user, fullName, vehicleCount, bookingCount, isAdmin, loading };
 }
