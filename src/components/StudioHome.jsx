@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import beforeImg from "../assets/before.png";
 import afterImg from "../assets/after.png";
+import koliImg from "../assets/koli.png"; 
+import opaImg from "../assets/opa.jpg"; 
+import deepCleanImg from "../assets/deepClean.png"; 
+import klimaImg from "../assets/klima.png"; 
+import tinImg from "../assets/tin.png"; 
 import { useTranslation } from "react-i18next";
 import TeamSection from "./TeamSection";
 
@@ -33,9 +38,9 @@ export default function StudioHome({
       <div className="relative overflow-hidden rounded-3xl border border-slate-800 shadow-2xl min-h-125 flex items-center">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1920&q=80"
+            src={koliImg}
             alt="Luxury detailing studio"
-            className="w-full h-full object-cover object-center scale-105 animate-pulse-slow"
+            className="w-full h-full object-cover object-center scale-105"
           />
           <div className="absolute inset-0 bg-linear-to-r from-slate-950 via-slate-950/90 to-slate-900/40"></div>
           <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent"></div>
@@ -56,16 +61,16 @@ export default function StudioHome({
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">
-            {t("hero_title_1", "The Showroom Shine.")} <br />
+            {t("hero_title_1", "The Pinnacle of Automotive Curation.")} <br />
             <span className="bg-linear-to-r from-cyan-400 via-teal-400 to-blue-500 bg-clip-text text-transparent font-extrabold">
-              {t("hero_title_2", "Preserved Permanently.")}
+              {t("hero_title_2", "Perfection, Preserved Permanently.")}
             </span>
           </h1>
 
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed drop-shadow-md">
             {t(
               "hero_desc",
-              "Experience ultra-premium automotive detailing. From multi-stage machine paint corrections to certified 9H nanotech ceramic coatings, we treat your vehicle to elite aesthetic and protective standards.",
+              "Experience elite-tier automotive detailing tailored for luxury, exotic, and classic vehicles. From meticulous multi-stage machine paint correction to certified 9H+ nanotech ceramic coatings, we execute every treatment with scientific precision to achieve unmatched optical clarity and permanent surface protection.",
             )}
           </p>
 
@@ -89,6 +94,7 @@ export default function StudioHome({
           </div>
         </div>
       </div>
+
       <div className="space-y-4">
         <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">
           {t("section_dashboard", "Your Personal Dashboard")}
@@ -251,7 +257,7 @@ export default function StudioHome({
         </div>
       </div>
 
-      {/* Studio Core Standards */}
+      {/* Type Core Standards */}
       <div className="space-y-6">
         <div className="text-center max-w-xl mx-auto space-y-1">
           <h2 className="text-2xl font-black text-white tracking-tight">
@@ -268,20 +274,20 @@ export default function StudioHome({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
-              key: "wash",
-              img: "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=400&q=80",
+              key: "polish",
+              img: opaImg,
             },
             {
-              key: "prep",
-              img: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=400&q=80",
+              key: "interior",
+              img: deepCleanImg,
             },
             {
-              key: "experts",
-              img: "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?auto=format&fit=crop&w=400&q=80",
+              key: "hvac",
+              img: klimaImg,
             },
             {
-              key: "bays",
-              img: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=400&q=80",
+              key: "styling", // Updated data key to map to premium tints and wraps
+              img: tinImg, // Swapped from remote URL to your uploaded tinImg asset
             },
           ].map((item, idx) => (
             <div
