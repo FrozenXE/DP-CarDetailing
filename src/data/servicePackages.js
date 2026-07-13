@@ -17,8 +17,8 @@ export const servicePackages = [
       "service.paint.feature1",
       "service.paint.feature2",
       "service.paint.feature3",
-      "service.paint.feature4"
-    ]
+      "service.paint.feature4",
+    ],
   },
 
   {
@@ -39,8 +39,8 @@ export const servicePackages = [
       "service.ceramic.feature1",
       "service.ceramic.feature2",
       "service.ceramic.feature3",
-      "service.ceramic.feature4"
-    ]
+      "service.ceramic.feature4",
+    ],
   },
 
   {
@@ -61,8 +61,8 @@ export const servicePackages = [
       "service.interior.feature1",
       "service.interior.feature2",
       "service.interior.feature3",
-      "service.interior.feature4"
-    ]
+      "service.interior.feature4",
+    ],
   },
 
   {
@@ -83,14 +83,11 @@ export const servicePackages = [
       "service.maintenance.feature1",
       "service.maintenance.feature2",
       "service.maintenance.feature3",
-      "service.maintenance.feature4"
-    ]
-  }
+      "service.maintenance.feature4",
+    ],
+  },
 ];
 
-
 export function getServicePackageById(packageId) {
-  return servicePackages.find(
-    (pkg) => pkg.id === packageId
-  ) || null;
+  return servicePackages.find((pkg) => pkg.id === packageId) || null;
 }

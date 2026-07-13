@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '../supabaseClient';
+import { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
 
 export function useUserData() {
   const [user, setUser] = useState(null);
-  const [fullName, setFullName] = useState('');
+  const [fullName, setFullName] = useState("");
   const [vehicleCount, setVehicleCount] = useState(null);
   const [bookingCount, setBookingCount] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -15,7 +15,7 @@ export function useUserData() {
     const loadUserData = async (session) => {
       if (!session?.user) {
         setUser(null);
-        setFullName('');
+        setFullName("");
         setIsAdmin(false);
         setVehicleCount(null);
         setBookingCount(null);
@@ -29,37 +29,40 @@ export function useUserData() {
       const [profileResult, vehicleCountResult, bookingCountResult] =
         await Promise.all([
           supabase
-            .from('profiles')
-            .select('full_name, is_admin')
-            .eq('id', session.user.id)
+            .from("profiles")
+            .select("is_admin, full_name")
+            .eq("id", session.user.id)
             .single(),
-
           supabase
-            .from('vehicles')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', session.user.id),
-
+            .from("vehicles")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", session.user.id),
           supabase
-            .from('bookings')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', session.user.id),
+            .from("bookings")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", session.user.id),
         ]);
 
       if (profileResult.error) {
-        console.warn('useUserData profile error', profileResult.error);
+        console.warn("useUserData profile error", profileResult.error);
       }
 
-      setFullName(profileResult.data?.full_name || '');
       setIsAdmin(profileResult.data?.is_admin || false);
 
+      const resolvedFullName =
+        profileResult.data?.full_name ||
+        session.user.user_metadata?.full_name ||
+        session.user.email?.split("@")[0] ||
+        "Client";
+
+      setFullName(resolvedFullName);
+
       setVehicleCount(
-        vehicleCountResult.error ? 0 : vehicleCountResult.count ?? 0
+        vehicleCountResult.error ? 0 : (vehicleCountResult.count ?? 0),
       );
-
       setBookingCount(
-        bookingCountResult.error ? 0 : bookingCountResult.count ?? 0
+        bookingCountResult.error ? 0 : (bookingCountResult.count ?? 0),
       );
-
       setLoading(false);
     };
 

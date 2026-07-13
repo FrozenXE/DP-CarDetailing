@@ -1,9 +1,112 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ContactView() {
   const { t } = useTranslation();
-  const [name, setName] = useState(''); const [email, setEmail] = useState(''); const [phone, setPhone] = useState(''); const [message, setMessage] = useState(''); const [submitted, setSubmitted] = useState(false);
-  const handleSubmit = (event) => { event.preventDefault(); const subject = encodeURIComponent(t('contact_email_subject')); const body = encodeURIComponent(`${t('contact_name')}: ${name}\n${t('contact_email')}: ${email}\n${t('contact_phone')}: ${phone}\n\n${t('contact_message')}:\n${message}`); window.location.href = `mailto:apexstudio404@gmail.com?subject=${subject}&body=${body}`; setSubmitted(true); };
-  return <div className="space-y-8 text-slate-100 animate-fade-in"><div className="mx-auto max-w-4xl space-y-3"><div><h1 className="text-3xl font-black tracking-tight">{t('contact_title')}</h1><p className="text-sm text-slate-400">{t('contact_desc')}</p></div><div className="grid gap-4 sm:grid-cols-2"><div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6"><p className="text-xs uppercase tracking-[0.3em] text-slate-500">{t('contact_email')}</p><p className="mt-2 text-sm text-slate-200">apexstudio@gmail.com</p></div><div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6"><p className="text-xs uppercase tracking-[0.3em] text-slate-500">{t('contact_support')}</p><p className="mt-2 text-sm text-slate-200">{t('contact_support_hours')}</p></div></div></div><form onSubmit={handleSubmit} className="mx-auto max-w-4xl space-y-5 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-2xl"><div className="grid gap-4 sm:grid-cols-2"><label className="space-y-2 text-xs font-semibold text-slate-300">{t('contact_name')}<input required value={name} onChange={(event) => setName(event.target.value)} className="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100" placeholder="John Doe" /></label><label className="space-y-2 text-xs font-semibold text-slate-300">{t('contact_email')}<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100" placeholder="you@example.com" /></label></div><label className="space-y-2 text-xs font-semibold text-slate-300">{t('contact_phone')}<input value={phone} onChange={(event) => setPhone(event.target.value)} className="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100" placeholder="(123) 456-7890" /></label><label className="space-y-2 text-xs font-semibold text-slate-300">{t('contact_message')}<textarea required value={message} onChange={(event) => setMessage(event.target.value)} rows="5" className="w-full resize-none rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100" placeholder={t('contact_message_placeholder')} /></label><div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center"><p className="text-[11px] text-slate-500">{t('contact_mail_notice')}</p><button type="submit" className="inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-sm font-bold uppercase tracking-[0.15em] text-slate-950 sm:w-auto">{t('contact_send')}</button></div>{submitted && <div className="rounded-2xl border border-emerald-500/20 bg-emerald-950/60 p-4 text-sm text-emerald-200">{t('contact_sent')}</div>}</form></div>;
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const subject = encodeURIComponent(t("contact_email_subject"));
+    const body = encodeURIComponent(
+      `${t("contact_name")}: ${name}\n${t("contact_email")}: ${email}\n${t("contact_phone")}: ${phone}\n\n${t("contact_message")}:\n${message}`,
+    );
+    window.location.href = `mailto:apexstudio404@gmail.com?subject=${subject}&body=${body}`;
+    setSubmitted(true);
+  };
+  return (
+    <div className="space-y-8 text-slate-100 animate-fade-in">
+      <div className="mx-auto max-w-4xl space-y-3">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight">
+            {t("contact_title")}
+          </h1>
+          <p className="text-sm text-slate-400">{t("contact_desc")}</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+              {t("contact_email")}
+            </p>
+            <p className="mt-2 text-sm text-slate-200">apexstudio@gmail.com</p>
+          </div>
+          <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+              {t("contact_support")}
+            </p>
+            <p className="mt-2 text-sm text-slate-200">
+              {t("contact_support_hours")}
+            </p>
+          </div>
+        </div>
+      </div>
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto max-w-4xl space-y-5 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-2xl"
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="space-y-2 text-xs font-semibold text-slate-300">
+            {t("contact_name")}
+            <input
+              required
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              className="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100"
+              placeholder="John Doe"
+            />
+          </label>
+          <label className="space-y-2 text-xs font-semibold text-slate-300">
+            {t("contact_email")}
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100"
+              placeholder="you@example.com"
+            />
+          </label>
+        </div>
+        <label className="space-y-2 text-xs font-semibold text-slate-300">
+          {t("contact_phone")}
+          <input
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            className="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100"
+            placeholder="(123) 456-7890"
+          />
+        </label>
+        <label className="space-y-2 text-xs font-semibold text-slate-300">
+          {t("contact_message")}
+          <textarea
+            required
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            rows="5"
+            className="w-full resize-none rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-100"
+            placeholder={t("contact_message_placeholder")}
+          />
+        </label>
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+          <p className="text-[11px] text-slate-500">
+            {t("contact_mail_notice")}
+          </p>
+          <button
+            type="submit"
+            className="inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-sm font-bold uppercase tracking-[0.15em] text-slate-950 sm:w-auto"
+          >
+            {t("contact_send")}
+          </button>
+        </div>
+        {submitted && (
+          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-950/60 p-4 text-sm text-emerald-200">
+            {t("contact_sent")}
+          </div>
+        )}
+      </form>
+    </div>
+  );
 }
