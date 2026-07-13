@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { supabase } from "../supabaseClient";
 
 export default function ContactView() {
   const { t } = useTranslation();
@@ -7,15 +8,49 @@ export default function ContactView() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const [submissionState, setSubmissionState] = useState({
+    type: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const openEmailFallback = () => {
     const subject = encodeURIComponent(t("contact_email_subject"));
     const body = encodeURIComponent(
       `${t("contact_name")}: ${name}\n${t("contact_email")}: ${email}\n${t("contact_phone")}: ${phone}\n\n${t("contact_message")}:\n${message}`,
     );
+
     window.location.href = `mailto:apexstudio404@gmail.com?subject=${subject}&body=${body}`;
-    setSubmitted(true);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setSubmissionState({ type: "", message: "" });
+
+    try {
+      const { error } = await supabase.from("contact_messages").insert([
+        {
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || null,
+          message: message.trim(),
+        },
+      ]);
+
+      if (error) throw error;
+
+      setName("");
+      setEmail("");
+      setPhone("");
+      setMessage("");
+      setSubmissionState({ type: "success", message: t("contact_saved") });
+    } catch {
+      openEmailFallback();
+      setSubmissionState({ type: "fallback", message: t("contact_fallback") });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   return (
     <div className="space-y-8 text-slate-100 animate-fade-in">
@@ -92,18 +127,25 @@ export default function ContactView() {
         </label>
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <p className="text-[11px] text-slate-500">
-            {t("contact_mail_notice")}
+            {t("contact_submit_notice")}
           </p>
           <button
             type="submit"
-            className="inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-sm font-bold uppercase tracking-[0.15em] text-slate-950 sm:w-auto"
+            disabled={isSubmitting}
+            className="inline-flex w-full cursor-pointer items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-sm font-bold uppercase tracking-[0.15em] text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           >
-            {t("contact_send")}
+            {isSubmitting ? t("contact_sending") : t("contact_send")}
           </button>
         </div>
-        {submitted && (
-          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-950/60 p-4 text-sm text-emerald-200">
-            {t("contact_sent")}
+        {submissionState.message && (
+          <div
+            className={`rounded-2xl border p-4 text-sm ${
+              submissionState.type === "success"
+                ? "border-emerald-500/20 bg-emerald-950/60 text-emerald-200"
+                : "border-amber-500/20 bg-amber-950/60 text-amber-200"
+            }`}
+          >
+            {submissionState.message}
           </div>
         )}
       </form>

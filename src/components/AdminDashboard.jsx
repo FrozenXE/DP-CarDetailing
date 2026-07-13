@@ -18,6 +18,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [statusUpdates, setStatusUpdates] = useState({});
   const [isCompletedOpen, setIsCompletedOpen] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [updatingBookingId, setUpdatingBookingId] = useState(null);
 
   const fetchAllBookings = async () => {
     setLoading(true);
@@ -32,7 +34,11 @@ export default function AdminDashboard() {
       )
       .order("appointment_date", { ascending: true });
 
-    if (!error) setBookings(data || []);
+    if (error) {
+      setMessage({ type: "error", text: error.message });
+    } else {
+      setBookings(data || []);
+    }
     setLoading(false);
   };
 
@@ -48,13 +54,28 @@ export default function AdminDashboard() {
     const newStatus = statusUpdates[id];
     if (!newStatus) return;
 
-    await supabase.from("bookings").update({ status: newStatus }).eq("id", id);
-    setStatusUpdates((prev) => {
-      const copy = { ...prev };
-      delete copy[id];
-      return copy;
-    });
-    fetchAllBookings();
+    try {
+      setUpdatingBookingId(id);
+      setMessage({ type: "", text: "" });
+      const { error } = await supabase
+        .from("bookings")
+        .update({ status: newStatus })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      setStatusUpdates((prev) => {
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
+      });
+      setMessage({ type: "success", text: "Booking status updated." });
+      fetchAllBookings();
+    } catch (error) {
+      setMessage({ type: "error", text: error.message });
+    } finally {
+      setUpdatingBookingId(null);
+    }
   };
 
   const activeBookings = bookings.filter((b) => b.status !== "completed");
@@ -114,9 +135,10 @@ export default function AdminDashboard() {
                   {showConfirm ? (
                     <button
                       onClick={() => confirmStatusUpdate(b.id)}
+                      disabled={updatingBookingId === b.id}
                       className="rounded-lg bg-cyan-500 px-3 py-2 text-[11px] font-semibold uppercase tracking-widest text-slate-950 transition hover:bg-cyan-400 cursor-pointer"
                     >
-                      Confirm
+                      {updatingBookingId === b.id ? "Saving..." : "Confirm"}
                     </button>
                   ) : (
                     <span className="text-[10px] text-slate-500 uppercase tracking-widest">
@@ -143,6 +165,18 @@ export default function AdminDashboard() {
   return (
     <div className="text-slate-100 space-y-8">
       <h2 className="text-2xl font-black">🛡️ Studio Admin Ledger</h2>
+
+      {message.text && (
+        <div
+          className={`rounded-xl border p-4 text-sm ${
+            message.type === "success"
+              ? "border-cyan-500/30 bg-cyan-950/30 text-cyan-300"
+              : "border-red-500/30 bg-red-950/30 text-red-300"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
 
       <div className="space-y-3">
         <h3 className="text-sm font-bold uppercase text-slate-400 tracking-wider">
