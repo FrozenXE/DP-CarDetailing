@@ -10,6 +10,8 @@ import AuthView from './components/AuthView';
 import AdminDashboard from './components/AdminDashboard';
 import UserSettings from './components/UserSettings';
 import ContactView from './components/ContactView';
+import PrivacyPolicyView from './components/PrivacyPolicyView';
+import StoragePolicyView from './components/StoragePolicyView';
 import Footer from './components/Footer';
 import { useUserData } from './hooks/useUserData';
 
@@ -30,6 +32,10 @@ const pathToTab = (pathname) => {
       return 'admin';
     case 'contact':
       return 'contact';
+    case 'privacy':
+      return 'privacy';
+    case 'storage':
+      return 'storage';
     case '':
       return 'home';
     default:
@@ -46,6 +52,8 @@ const tabToPath = {
   settings: '/settings',
   admin: '/admin',
   contact: '/contact',
+  privacy: '/privacy',
+  storage: '/storage',
 };
 
 export default function App() {
@@ -141,6 +149,10 @@ export default function App() {
         {activeTab === 'settings' && <UserSettings setActiveTab={navigateTab} />}
 
         {activeTab === 'contact' && <ContactView setActiveTab={navigateTab} />}
+
+        {activeTab === 'privacy' && <PrivacyPolicyView />}
+
+        {activeTab === 'storage' && <StoragePolicyView />}
 
         {activeTab === 'admin' && isAdmin && <AdminDashboard />}
       </main>

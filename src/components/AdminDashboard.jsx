@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../supabaseClient';
+import { getServicePackageById } from '../data/servicePackages';
 
 const statusStyles = {
   pending: 'bg-amber-400',
@@ -11,6 +13,7 @@ const statusStyles = {
 };
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusUpdates, setStatusUpdates] = useState({});
@@ -21,10 +24,9 @@ export default function AdminDashboard() {
     const { data, error } = await supabase
       .from('bookings')
       .select(`
-        id, appointment_date, arrival_time_slot, status, special_instructions,
+        id, appointment_date, arrival_time_slot, status, special_instructions, service_id,
         profiles (full_name, phone),
-        vehicles (year, make, model),
-        services (name)
+        vehicles (year, make, model)
       `)
       .order('appointment_date', { ascending: true });
 
@@ -71,12 +73,13 @@ export default function AdminDashboard() {
             const selectedStatus = statusUpdates[b.id] ?? b.status;
             const showConfirm = statusUpdates[b.id] && statusUpdates[b.id] !== b.status;
             const badgeClass = statusStyles[selectedStatus] || statusStyles.default;
+            const servicePackage = getServicePackageById(b.service_id);
 
             return (
               <tr key={b.id} className="text-xs align-middle">
                 <td className="p-3">{b.profiles?.full_name}</td>
                 <td className="p-3">{b.vehicles?.make} {b.vehicles?.model}</td>
-                <td className="p-3">{b.services?.name}</td>
+                <td className="p-3">{servicePackage ? t(servicePackage.name) : t('booking_unknown_package')}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-3">
                     <span className={`h-2.5 w-2.5 rounded-full ${badgeClass}`}></span>
