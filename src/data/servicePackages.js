@@ -1,3 +1,8 @@
+import opaImg from "../assets/opa.jpg";
+import keramickoImg from "../assets/keramicko.png";
+import popIMG from "../assets/pop.png";
+import tinIMG from "../assets/tin.png";
+
 export const servicePackages = [
   {
     id: "paint-correction",
@@ -10,9 +15,8 @@ export const servicePackages = [
     duration: "service.paint.duration",
     badge: "service.paint.badge",
 
-    image:
-      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=600&q=80",
-
+    image: opaImg,
+    summary: "service.paint.summary",
     features: [
       "service.paint.feature1",
       "service.paint.feature2",
@@ -32,9 +36,8 @@ export const servicePackages = [
     duration: "service.ceramic.duration",
     badge: "service.ceramic.badge",
 
-    image:
-      "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80",
-
+    image: keramickoImg,
+    summary: "service.ceramic.summary",
     features: [
       "service.ceramic.feature1",
       "service.ceramic.feature2",
@@ -54,8 +57,8 @@ export const servicePackages = [
     duration: "service.interior.duration",
     badge: "service.interior.badge",
 
-    image:
-      "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=600&q=80",
+    image: popIMG,
+    summary: "service.interior.summary",
 
     features: [
       "service.interior.feature1",
@@ -76,8 +79,8 @@ export const servicePackages = [
     duration: "service.maintenance.duration",
     badge: "service.maintenance.badge",
 
-    image:
-      "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80",
+    image: tinIMG,
+    summary: "service.maintenance.summary",
 
     features: [
       "service.maintenance.feature1",

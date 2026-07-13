@@ -20,6 +20,9 @@ export default function ServicesView({ onConfigurePackage }) {
         <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
           {t("services_desc")}
         </p>
+        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+          {t("services_subtitle")}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -63,6 +66,9 @@ export default function ServicesView({ onConfigurePackage }) {
                 <p className="text-xs text-slate-400 font-medium italic">
                   {t(pkg.tagline)}
                 </p>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  {t(pkg.summary)}
+                </p>
 
                 <ul className="pt-4 space-y-2.5 border-t border-slate-900">
                   {pkg.features.map((feature, i) => (
@@ -89,6 +95,35 @@ export default function ServicesView({ onConfigurePackage }) {
                 </button>
               </div>
             </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        {[
+          {
+            title: t("services_highlight_1_title"),
+            description: t("services_highlight_1"),
+          },
+          {
+            title: t("services_highlight_2_title"),
+            description: t("services_highlight_2"),
+          },
+          {
+            title: t("services_highlight_3_title"),
+            description: t("services_highlight_3"),
+          },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 text-center shadow-xl"
+          >
+            <h4 className="text-xs font-bold text-white uppercase tracking-widest mb-2">
+              {item.title}
+            </h4>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              {item.description}
+            </p>
           </div>
         ))}
       </div>
