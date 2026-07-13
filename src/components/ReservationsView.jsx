@@ -7,6 +7,15 @@ import {
 } from "../data/servicePackages";
 
 const timeSlots = ["09:00", "11:30", "14:00", "16:30"];
+const reservedStatuses = ["pending", "active", "curing"];
+
+const statusStyles = {
+  pending: "border-amber-900/50 bg-amber-950/40 text-amber-400",
+  active: "border-blue-900/50 bg-blue-950/40 text-blue-400",
+  curing: "border-sky-900/50 bg-sky-950/40 text-sky-400",
+  completed: "border-emerald-900/50 bg-emerald-950/40 text-emerald-400",
+  cancelled: "border-red-900/50 bg-red-950/40 text-red-400",
+};
 
 export default function ReservationsView({
   user,
@@ -99,6 +108,21 @@ export default function ReservationsView({
     try {
       setErrorMsg("");
       setSuccessMsg("");
+
+      const { data: slotBookings, error: availabilityError } = await supabase
+        .from("bookings")
+        .select("id")
+        .eq("appointment_date", appointmentDate)
+        .eq("arrival_time_slot", timeSlot)
+        .in("status", reservedStatuses)
+        .limit(1);
+
+      if (availabilityError) throw availabilityError;
+      if (slotBookings?.length) {
+        setErrorMsg(t("booking_slot_unavailable"));
+        return;
+      }
+
       const { data, error } = await supabase
         .from("bookings")
         .insert([
@@ -131,11 +155,15 @@ export default function ReservationsView({
     try {
       const { error } = await supabase
         .from("bookings")
-        .delete()
+        .update({ status: "cancelled" })
         .eq("id", cancelModal.bookingId);
       if (error) throw error;
       setMyBookings((current) =>
-        current.filter((booking) => booking.id !== cancelModal.bookingId),
+        current.map((booking) =>
+          booking.id === cancelModal.bookingId
+            ? { ...booking, status: "cancelled" }
+            : booking,
+        ),
       );
       setSuccessMsg(t("booking_cancelled"));
     } catch (error) {
@@ -356,6 +384,9 @@ export default function ReservationsView({
           <div className="space-y-3">
             {myBookings.map((booking) => {
               const pkg = getServicePackageById(booking.service_id);
+              const canCancel = !["completed", "cancelled"].includes(
+                booking.status,
+              );
               return (
                 <div
                   key={booking.id}
@@ -387,16 +418,22 @@ export default function ReservationsView({
                     )}
                   </div>
                   <div className="flex items-center gap-4 self-end sm:self-center">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCancelModal({ open: true, bookingId: booking.id })
-                      }
-                      className="cursor-pointer rounded-full border border-red-900/50 bg-red-950/20 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-red-400"
+                    {canCancel && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setCancelModal({ open: true, bookingId: booking.id })
+                        }
+                        className="cursor-pointer rounded-full border border-red-900/50 bg-red-950/20 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-red-400"
+                      >
+                        {t("booking_cancel")}
+                      </button>
+                    )}
+                    <span
+                      className={`rounded-full border px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest ${
+                        statusStyles[booking.status] || statusStyles.pending
+                      }`}
                     >
-                      {t("booking_cancel")}
-                    </button>
-                    <span className="rounded-full border border-amber-900/50 bg-amber-950/40 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-amber-400">
                       ● {t(`booking_status_${booking.status}`, booking.status)}
                     </span>
                   </div>
