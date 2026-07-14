@@ -74,9 +74,7 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut }) {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Desktop Language Selector + Authentication Context */}
           <div className="hidden md:flex items-center gap-4">
-            {/* Global Language Toggle Component */}
             <div className="flex items-center space-x-1 bg-slate-950 p-1 rounded-lg border border-slate-850 text-[10px] font-mono font-bold relative z-50">
               <button
                 type="button"
@@ -212,10 +210,8 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut }) {
         </div>
       )}
 
-      {/* Mobile Menu Layout */}
       {menuOpen && (
         <div className="md:hidden border-t border-slate-900 bg-slate-950/95 px-4 py-4 space-y-4">
-          {/* Mobile Language Toggle Row */}
           <div className="flex items-center justify-between px-4 py-2 bg-slate-900/40 rounded-2xl border border-slate-900 relative z-50">
             <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
               {t("language", "Language")}

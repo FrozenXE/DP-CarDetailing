@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
 export default function AuthView({ setActiveTab }) {
-  // Added 'update-password' as a valid mode option
   const [mode, setMode] = useState("signin");
   const [loading, setLoading] = useState(false);
   const [resetCooldown, setResetCooldown] = useState(0);
@@ -23,7 +22,6 @@ export default function AuthView({ setActiveTab }) {
     return () => window.clearInterval(timer);
   }, [resetCooldown]);
 
-  // Detect if the user arrived via a reset password redirect link
   useEffect(() => {
     const handleRecoverySession = async () => {
       // Check if the URL hash contains the access token or if mode is passed in query string
@@ -35,7 +33,6 @@ export default function AuthView({ setActiveTab }) {
         searchParams.get("mode") === "update-password"
       ) {
         // Supabase automatically signs the user in temporarily when clicking a valid reset link.
-        // Let's verify if an active session exists.
         const {
           data: { session },
         } = await supabase.auth.getSession();
@@ -125,7 +122,7 @@ export default function AuthView({ setActiveTab }) {
         setResetCooldown(60);
         setEmail("");
       } else if (mode === "update-password") {
-        // Core execution to update password for the current recovery session user
+        // update password for the current recovery session user
         const { error: updateError } = await supabase.auth.updateUser({
           password: password,
         });
@@ -188,7 +185,6 @@ export default function AuthView({ setActiveTab }) {
       )}
 
       <div className="bg-linear-to-b from-slate-900 to-slate-950 border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-        {/* Hide default navigation tabs if we are in forced update-password flow */}
         {mode !== "update-password" && (
           <div className="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-900 mb-6 font-mono text-[10px] font-bold">
             <button

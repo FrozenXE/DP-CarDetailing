@@ -203,7 +203,6 @@ export default function StudioHome({
 
         <div className="lg:col-span-7 bg-slate-950 border border-slate-800 p-3 rounded-2xl shadow-2xl relative select-none w-full">
           <div className="relative h-72 sm:h-80 w-full rounded-xl overflow-hidden bg-slate-900">
-            {/* AFTER IMAGE */}
             <div className="absolute inset-0 w-full h-full">
               <img
                 src={afterImg}
@@ -215,7 +214,6 @@ export default function StudioHome({
               </span>
             </div>
 
-            {/* BEFORE IMAGE */}
             <div
               className="absolute inset-0 w-full h-full overflow-hidden"
               style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
@@ -313,7 +311,6 @@ export default function StudioHome({
         </div>
       </div>
 
-      {/* Testimonials */}
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-900 pb-4">
           <div>
@@ -382,7 +379,6 @@ export default function StudioHome({
         </div>
       </div>
 
-      {/* Accordion FAQ Grid */}
       <div className="space-y-6 max-w-4xl mx-auto">
         <div className="text-center space-y-1">
           <h2 className="text-xl font-black text-white tracking-wide">
@@ -427,7 +423,6 @@ export default function StudioHome({
 
       <TeamSection />
 
-      {/* Lower Call To Action Box */}
       <div className="bg-linear-to-br from-slate-900 to-slate-950 border border-slate-800 p-8 rounded-2xl text-center space-y-6 max-w-3xl mx-auto shadow-2xl relative overflow-hidden">
         <div className="space-y-2 relative z-10">
           <h3 className="text-xl font-black text-white tracking-wide">
