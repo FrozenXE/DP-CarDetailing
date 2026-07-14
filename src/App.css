@@ -58,6 +58,9 @@
 .page-intro__line { width: clamp(10rem, 24vw, 18rem); height: 1px; margin-top: 1.4rem; background: linear-gradient(90deg, transparent, #38bdf8, transparent); animation: introLine 1.8s ease forwards; }
 @media (prefers-reduced-motion: reduce) { .page-intro { display: none; } }
 
+html[data-theme="light"] .page-intro { background: #f8fafc; }
+html[data-theme="light"] .page-intro__content { color: #0f172a; }
+
 html, body {
   background-color: #020617 !important;
   color: #f1f5f9;

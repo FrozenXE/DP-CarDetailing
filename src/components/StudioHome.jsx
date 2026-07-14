@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import beforeImg from "../assets/before.png";
-import afterImg from "../assets/after.png";
+import beforeImg from "../assets/before.jpg";
+import afterImg from "../assets/after.jpg";
 import koliImg from "../assets/koli.png"; 
 import opaImg from "../assets/opa.jpg"; 
 import deepCleanImg from "../assets/deepClean.png"; 

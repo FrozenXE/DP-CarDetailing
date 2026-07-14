@@ -58,6 +58,10 @@ const tabToPath = {
 };
 
 export default function App() {
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("app_theme");
+    return savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+  });
   const [showIntro, setShowIntro] = useState(true);
   const [hideApp, setHideApp] = useState(true);
   const [activeTab, setActiveTab] = useState(() =>
@@ -71,6 +75,15 @@ export default function App() {
     const revealApp = window.setTimeout(() => setHideApp(false), 1300);
     return () => window.clearTimeout(revealApp);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("app_theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  };
 
   useEffect(() => {
     const handleBrowserNavigation = () => {
@@ -141,6 +154,8 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={navigateTab}
         onSignOut={handleSignOut}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       <main
