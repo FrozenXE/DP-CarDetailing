@@ -81,19 +81,24 @@ export default function App() {
 
     const hash = window.location.hash;
     const searchParams = new URLSearchParams(window.location.search);
+    const openRecovery = () => {
+      const recoveryUrl = `${tabToPath.auth}${window.location.search}${window.location.hash}`;
+      window.history.replaceState({}, "", recoveryUrl);
+      setActiveTab("auth");
+    };
 
     if (
       hash.includes("type=recovery") ||
       searchParams.get("mode") === "update-password"
     ) {
-      navigateTab("auth");
+      openRecovery();
     }
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
-        navigateTab("auth");
+        openRecovery();
       }
     });
 

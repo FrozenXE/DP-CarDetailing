@@ -1,6 +1,6 @@
 export const teamMembers = [
   {
-    name: "Jovan",
+    name: "Jovan Mitrev",
     role: "team_owner_role",
     bio: "team_owner_bio",
     initials: "JM",
@@ -9,21 +9,21 @@ export const teamMembers = [
     isOwner: true,
   },
   {
-    name: "Aleksandar",
+    name: "Aleksandar Kostov",
     role: "team_specialist_role",
     bio: "team_specialist_bio",
     initials: "AK",
     accent: "from-blue-400 to-indigo-500",
   },
   {
-    name: "Kiril",
+    name: "Kiril Leov",
     role: "team_specialist_role",
     bio: "team_specialist_bio",
     initials: "Ki",
     accent: "from-teal-400 to-cyan-600",
   },
   {
-    name: "Bojan",
+    name: "Bojan Kjurciski",
     role: "team_specialist_role",
     bio: "team_specialist_bio",
     initials: "Bo",

@@ -5,12 +5,23 @@ export default function AuthView({ setActiveTab }) {
   // Added 'update-password' as a valid mode option
   const [mode, setMode] = useState("signin");
   const [loading, setLoading] = useState(false);
+  const [resetCooldown, setResetCooldown] = useState(0);
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+
+  useEffect(() => {
+    if (resetCooldown === 0) return undefined;
+
+    const timer = window.setInterval(() => {
+      setResetCooldown((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [resetCooldown]);
 
   // Detect if the user arrived via a reset password redirect link
   useEffect(() => {
@@ -101,7 +112,7 @@ export default function AuthView({ setActiveTab }) {
         const { error: resetError } = await supabase.auth.resetPasswordForEmail(
           email,
           {
-            redirectTo: `${window.location.origin}`, // Redirecting directly back to core origin
+            redirectTo: `${window.location.origin}/auth`,
           },
         );
 
@@ -111,6 +122,7 @@ export default function AuthView({ setActiveTab }) {
           type: "success",
           text: "Password reset link sent! Check your email for instructions.",
         });
+        setResetCooldown(60);
         setEmail("");
       } else if (mode === "update-password") {
         // Core execution to update password for the current recovery session user
@@ -303,15 +315,17 @@ export default function AuthView({ setActiveTab }) {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || (mode === "reset" && resetCooldown > 0)}
             className="w-full bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-black py-3 rounded-xl text-xs uppercase tracking-widest mt-6 cursor-pointer hover:shadow-lg hover:shadow-cyan-500/10 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading
               ? "Processing Gateway..."
               : mode === "signup"
                 ? "Initialize Studio Account"
-                : mode === "reset"
-                  ? "Send Reset Link"
+              : mode === "reset"
+                  ? resetCooldown > 0
+                    ? `Try again in ${resetCooldown}s`
+                    : "Send Reset Link"
                   : mode === "update-password"
                     ? "Update Master Password"
                     : "Authenticate Gateway"}
