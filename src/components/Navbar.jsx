@@ -4,7 +4,7 @@ import { useUserData } from "../hooks/useUserData";
 import logo from "../assets/logo.png";
 import "../i18n";
 
-export default function Navbar({ activeTab, setActiveTab, onSignOut }) {
+export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onToggleTheme }) {
   const { user, fullName, isAdmin } = useUserData();
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -38,7 +38,27 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut }) {
 
   return (
     <nav className="border-b border-slate-900 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <button
+        type="button"
+        className={`theme-toggle ${theme === "light" ? "theme-toggle--light" : "theme-toggle--dark"}`}
+        onClick={onToggleTheme}
+        aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+        title={`Switch to ${theme === "dark" ? "day" : "night"} theme`}
+      >
+        <span className="theme-toggle__sun" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
+            <circle cx="12" cy="12" r="3.5" />
+            <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56" />
+          </svg>
+        </span>
+        <span className="theme-toggle__moon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20.7 15.1A8.5 8.5 0 0 1 8.9 3.3 8.5 8.5 0 1 0 20.7 15.1Z" />
+          </svg>
+        </span>
+        <span className="sr-only">Current theme: {theme}</span>
+      </button>
+      <div className="max-w-7xl mx-auto pl-24 pr-4 sm:pl-28 sm:pr-6 lg:pl-28 lg:pr-8 h-16 flex items-center justify-between">
         <div
           onClick={() => setActiveTab("home")}
           className="text-md font-black tracking-wider text-white cursor-pointer flex items-center gap-3"
