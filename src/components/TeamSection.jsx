@@ -10,7 +10,7 @@ export default function TeamSection() {
         <span className="rounded border border-cyan-900 bg-cyan-950 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cyan-400">
           {t("team_badge")}
         </span>
-        <h2 className="text-2xl font-black tracking-tight text-white">
+        <h2 className="text-2xl pt-3 font-black tracking-tight text-white">
           {t("team_title")}
         </h2>
         <p className="text-xs leading-relaxed text-slate-400">
@@ -23,11 +23,19 @@ export default function TeamSection() {
             key={member.initials}
             className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 text-center shadow-xl transition hover:-translate-y-1 hover:border-slate-700"
           >
-            <div
-              className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br ${member.accent} text-lg font-black text-slate-950 shadow-lg`}
-            >
-              {member.initials}
-            </div>
+            {member.image ? (
+              <img
+                src={member.image}
+                alt={member.name}
+                className="mx-auto h-16 w-16 rounded-2xl border border-cyan-500/30 object-cover shadow-lg"
+              />
+            ) : (
+              <div
+                className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br ${member.accent} text-lg font-black text-slate-950 shadow-lg`}
+              >
+                {member.initials}
+              </div>
+            )}
             <h3 className="mt-4 text-lg font-black text-white">
               {member.name}
             </h3>

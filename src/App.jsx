@@ -13,6 +13,7 @@ import ContactView from "./components/ContactView";
 import PrivacyPolicyView from "./components/PrivacyPolicyView";
 import StoragePolicyView from "./components/StoragePolicyView";
 import Footer from "./components/Footer";
+import PageIntro from "./components/PageIntro";
 import { useUserData } from "./hooks/useUserData";
 
 const pathToTab = (pathname) => {
@@ -57,6 +58,8 @@ const tabToPath = {
 };
 
 export default function App() {
+  const [showIntro, setShowIntro] = useState(true);
+  const [hideApp, setHideApp] = useState(true);
   const [activeTab, setActiveTab] = useState(() =>
     pathToTab(window.location.pathname),
   );
@@ -65,6 +68,17 @@ export default function App() {
   const { user, vehicleCount, bookingCount, isAdmin } = useUserData();
 
   useEffect(() => {
+    const revealApp = window.setTimeout(() => setHideApp(false), 1300);
+    return () => window.clearTimeout(revealApp);
+  }, []);
+
+  useEffect(() => {
+    const handleBrowserNavigation = () => {
+      setActiveTab(pathToTab(window.location.pathname));
+    };
+
+    window.addEventListener("popstate", handleBrowserNavigation);
+
     const hash = window.location.hash;
     const searchParams = new URLSearchParams(window.location.search);
 
@@ -84,6 +98,7 @@ export default function App() {
     });
 
     return () => {
+      window.removeEventListener("popstate", handleBrowserNavigation);
       subscription.unsubscribe();
     };
   }, []);
@@ -96,6 +111,7 @@ export default function App() {
         : window.history.pushState;
       method.call(window.history, {}, "", path);
     }
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     setActiveTab(tab);
   };
 
@@ -117,7 +133,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 font-sans antialiased text-slate-200">
+    <div
+      className={`min-h-screen bg-slate-950 font-sans antialiased text-slate-200${hideApp ? " app-shell--loading" : ""}`}
+    >
+      {showIntro && <PageIntro onComplete={() => { setShowIntro(false); setHideApp(false); }} />}
       <Navbar
         activeTab={activeTab}
         setActiveTab={navigateTab}
@@ -125,7 +144,7 @@ export default function App() {
       />
 
       <main
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 page-transition"
+        className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-2 py-8 page-transition"
         key={activeTab}
       >
         {activeTab === "home" && (

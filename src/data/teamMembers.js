@@ -5,6 +5,7 @@ export const teamMembers = [
     bio: "team_owner_bio",
     initials: "JM",
     accent: "from-cyan-400 to-blue-500",
+    image: "/113887527.jpg",
     isOwner: true,
   },
   {

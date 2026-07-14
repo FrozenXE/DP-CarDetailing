@@ -60,7 +60,7 @@ export default function StudioHome({
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">
+          <h1 className="text-4xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-none">
             {t("hero_title_1", "The Pinnacle of Automotive Curation.")} <br />
             <span className="bg-linear-to-r from-cyan-400 via-teal-400 to-blue-500 bg-clip-text text-transparent font-extrabold">
               {t("hero_title_2", "Perfection, Preserved Permanently.")}
@@ -175,7 +175,6 @@ export default function StudioHome({
         </div>
       </div>
 
-      {/* Interactive Visual Slider Container */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/30 p-6 sm:p-8 rounded-3xl border border-slate-900/80">
         <div className="lg:col-span-5 space-y-4">
           <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded bg-cyan-950 border border-cyan-900 text-cyan-400 uppercase tracking-widest">
@@ -257,7 +256,6 @@ export default function StudioHome({
         </div>
       </div>
 
-      {/* Type Core Standards */}
       <div className="space-y-6">
         <div className="text-center max-w-xl mx-auto space-y-1">
           <h2 className="text-2xl font-black text-white tracking-tight">
@@ -286,8 +284,8 @@ export default function StudioHome({
               img: klimaImg,
             },
             {
-              key: "styling", // Updated data key to map to premium tints and wraps
-              img: tinImg, // Swapped from remote URL to your uploaded tinImg asset
+              key: "styling", 
+              img: tinImg, 
             },
           ].map((item, idx) => (
             <div
