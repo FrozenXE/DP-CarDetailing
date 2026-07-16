@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../hooks/useUserData";
 import logo from "../assets/logo.png";
@@ -9,6 +9,8 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const settingsMenuRef = useRef(null);
   const { t, i18n } = useTranslation();
 
   const handleSignOut = async () => {
@@ -32,12 +34,33 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
     { id: "services", label: t("nav_services", "Detailing Menu") },
     { id: "garage", label: t("nav_garage", "My Garage") },
     { id: "bookings", label: t("nav_bookings", "Reservations") },
-    { id: "contact", label: t("nav_contact", "Contact") },
-    ...(isAdmin ? [{ id: "admin", label: t("nav_admin", "Admin Panel") }] : []),
   ];
 
+  const isSettingsActive = activeTab === "settings" || activeTab === "admin";
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event) => {
+      if (!settingsMenuRef.current?.contains(event.target)) setSettingsOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setSettingsOpen(false);
+    };
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
+
+  const navigate = (tab) => {
+    setActiveTab(tab);
+    setSettingsOpen(false);
+    setMenuOpen(false);
+  };
+
   return (
-    <nav className="border-b border-slate-900 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/85 shadow-lg shadow-slate-950/30 backdrop-blur-xl">
       <button
         type="button"
         className={`theme-toggle ${theme === "light" ? "theme-toggle--light" : "theme-toggle--dark"}`}
@@ -58,9 +81,9 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
         </span>
         <span className="sr-only">Current theme: {theme}</span>
       </button>
-      <div className="max-w-7xl mx-auto pl-24 pr-4 sm:pl-28 sm:pr-6 lg:pl-28 lg:pr-8 h-16 flex items-center justify-between">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between pl-24 pr-4 sm:pl-28 sm:pr-6 lg:pl-28 lg:pr-8">
         <div
-          onClick={() => setActiveTab("home")}
+          onClick={() => navigate("home")}
           className="text-md font-black tracking-wider text-white cursor-pointer flex items-center gap-3"
           style={{ cursor: "pointer" }}
         >
@@ -75,16 +98,16 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
         </div>
 
         {/* Desktop Menu navigation */}
-        <div className="hidden md:flex items-center gap-6 text-[11px] font-mono font-bold tracking-wider uppercase">
+        <div className="hidden items-center rounded-2xl border border-slate-800/80 bg-slate-900/40 p-1 md:flex">
           {navItems.map((item) => (
             <button
               key={item.id}
               type="button"
-              onClick={() => setActiveTab(item.id)}
-              className={`transition-colors py-1 px-3 rounded-lg ${
+              onClick={() => navigate(item.id)}
+              className={`rounded-xl px-3 py-2 text-[10px] font-mono font-bold uppercase tracking-wider transition-colors ${
                 activeTab === item.id
-                  ? "text-cyan-400 bg-slate-900 border border-slate-850 shadow-inner"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "border border-cyan-400/15 bg-cyan-950/40 text-cyan-300 shadow-inner"
+                  : "text-slate-400 hover:bg-slate-800/70 hover:text-slate-100"
               }`}
               style={{ cursor: "pointer" }}
             >
@@ -133,14 +156,26 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
                   </span>
                 </div>
 
+                <div className="relative" ref={settingsMenuRef}>
                 <button
                   type="button"
-                  onClick={() => setActiveTab("settings")}
-                  className="bg-slate-900 hover:bg-cyan-950/40 border border-slate-850 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-300 font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all shadow-md"
+                  onClick={() => setSettingsOpen((open) => !open)}
+                  aria-expanded={settingsOpen}
+                  aria-haspopup="menu"
+                  className={`bg-slate-900 border font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all shadow-md ${isSettingsActive || settingsOpen ? "border-cyan-400/40 bg-cyan-950/40 text-cyan-300" : "border-slate-800 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-300"}`}
                   style={{ cursor: "pointer" }}
                 >
                   ⚙ {t("settings", "Settings")}
                 </button>
+
+                {settingsOpen && (
+                  <div role="menu" className="absolute right-0 top-full z-50 mt-2 w-max min-w-64 rounded-2xl border border-slate-700/80 bg-slate-900 p-1.5 shadow-2xl shadow-black/40">
+                    <p className="px-3 py-2 text-[9px] font-mono font-bold uppercase tracking-[0.18em] text-slate-500">{fullName || t("client", "Client")}</p>
+                    <button type="button" role="menuitem" onClick={() => navigate("settings")} className="w-full whitespace-nowrap rounded-xl px-3 py-2.5 text-left text-xs font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white">User settings</button>
+                    {isAdmin && <button type="button" role="menuitem" onClick={() => navigate("admin")} className="w-full whitespace-nowrap rounded-xl px-3 py-2.5 text-left text-xs font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white">{t("nav_admin", "Admin Panel")}</button>}
+                  </div>
+                )}
+                </div>
 
                 <button
                   type="button"
@@ -176,7 +211,7 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
       </div>
 
       {showSignOutConfirm && (
-        <div className="fixed inset-0 z-[9999] flex min-h-screen items-center justify-center bg-black/40 backdrop-blur-md p-4">
+        <div className="fixed inset-0 z-9999] flex min-h-screen items-center justify-center bg-black/40 backdrop-blur-md p-4">
           <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl shadow-cyan-950/30 ring-1 ring-cyan-950/30">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-red-500/20 bg-red-950/30 text-xl">
@@ -269,10 +304,7 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
               <button
                 key={item.id}
                 type="button"
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setMenuOpen(false);
-                }}
+                onClick={() => navigate(item.id)}
                 className={`w-full text-left rounded-2xl px-4 py-3 text-sm font-semibold uppercase tracking-wider transition-all ${
                   activeTab === item.id
                     ? "bg-slate-900 text-cyan-400 border border-slate-800"
@@ -299,15 +331,18 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
-                      onClick={() => {
-                        setActiveTab("settings");
-                        setMenuOpen(false);
-                      }}
+                      onClick={() => navigate("settings")}
                       className="w-full justify-center bg-slate-900 hover:bg-cyan-950/40 border border-slate-850 text-slate-300 font-mono text-xs font-bold uppercase tracking-wider py-3 rounded-2xl transition-all shadow-md flex items-center gap-1"
                       style={{ cursor: "pointer" }}
                     >
                       ⚙ {t("settings", "Settings")}
                     </button>
+
+                    {isAdmin && (
+                      <button type="button" onClick={() => navigate("admin")} className="w-full justify-center border border-slate-850 bg-slate-900 py-3 text-xs font-mono font-bold uppercase tracking-wider text-slate-300 shadow-md transition-all hover:bg-cyan-950/40">
+                        {t("nav_admin", "Admin Panel")}
+                      </button>
+                    )}
 
                     <button
                       type="button"
