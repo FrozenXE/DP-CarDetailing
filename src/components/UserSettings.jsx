@@ -83,7 +83,7 @@ export default function UserSettings({ setActiveTab }) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 rounded-3xl border border-slate-800 bg-slate-900/60 p-6 shadow-2xl shadow-cyan-950/20 sm:p-8">
-      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
+      <div className="flex flex-col items-start justify-between gap-6 sm:flex-row">
         <div className="space-y-2">
           <span className="rounded-full border border-cyan-500/20 bg-cyan-950/30 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-cyan-400">
             {t("settings_badge")}
@@ -122,7 +122,7 @@ export default function UserSettings({ setActiveTab }) {
             className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-2.5 text-sm text-white"
           />
         </label>
-        <label className="space-y-1">
+        <label className="space-y-2">
           <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">
             {t("settings_email")}
           </span>
