@@ -105,6 +105,7 @@
     "booking_selected_package": "Selected package",
     "booking_vehicle": "Vehicle",
     "booking_select_vehicle": "Select a vehicle",
+    "booking_add_vehicle": "Add a vehicle",
     "booking_package": "Treatment package",
     "booking_date": "Appointment date",
     "booking_time": "Arrival time",

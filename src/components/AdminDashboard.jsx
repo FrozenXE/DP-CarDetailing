@@ -83,7 +83,7 @@ export default function AdminDashboard() {
 
   const renderTable = (dataList) => (
     <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 overflow-x-auto">
-      <table className="min-w-[640px] w-full text-left">
+      <table className="min-w-640 w-full text-left">
         <thead>
           <tr className="text-slate-500 text-[10px] uppercase tracking-widest font-bold">
             <th className="p-3">Client</th>

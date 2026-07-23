@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../supabaseClient";
 
-export default function GarageView({ user, setActiveTab, onScheduleSession }) {
+export default function GarageView({
+  user,
+  setActiveTab,
+  onScheduleSession,
+  autoOpenAddForm,
+  setAutoOpenAddForm,
+}) {
   const { t } = useTranslation();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,6 +19,13 @@ export default function GarageView({ user, setActiveTab, onScheduleSession }) {
   const [classification, setClassification] = useState("Sedan");
   const [paintColor, setPaintColor] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+
+  useEffect(() => {
+    if (autoOpenAddForm) {
+      setShowAddForm(true);
+      setAutoOpexnAddForm(false);
+    }
+  }, [autoOpenAddForm, setAutoOpenAddForm]);
 
   useEffect(() => {
     async function getVehicles() {

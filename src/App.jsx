@@ -69,6 +69,7 @@ export default function App() {
   );
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const [autoOpenWizard, setAutoOpenWizard] = useState(false);
+  const [autoOpenGarageForm, setAutoOpenGarageForm] = useState(false);
   const { user, vehicleCount, bookingCount, isAdmin } = useUserData();
 
   useEffect(() => {
@@ -150,6 +151,11 @@ export default function App() {
     navigateTab("bookings");
   };
 
+  const handleAddVehicleForBooking = () => {
+    setAutoOpenGarageForm(true);
+    navigateTab("garage");
+  };
+
   return (
     <div
       className={`min-h-screen bg-slate-950 font-sans antialiased text-slate-200${hideApp ? " app-shell--loading" : ""}`}
@@ -185,6 +191,8 @@ export default function App() {
             user={user}
             setActiveTab={navigateTab}
             onScheduleSession={handleOpenBookingWizard}
+            autoOpenAddForm={autoOpenGarageForm}
+            setAutoOpenAddForm={setAutoOpenGarageForm}
           />
         )}
 
@@ -196,6 +204,7 @@ export default function App() {
             setSelectedPackageId={setSelectedPackageId}
             autoOpenWizard={autoOpenWizard}
             setAutoOpenWizard={setAutoOpenWizard}
+            onAddVehicle={handleAddVehicleForBooking}
           />
         )}
 

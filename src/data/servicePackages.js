@@ -1,7 +1,7 @@
-import opaImg from "../assets/opa.jpg";
-import keramickoImg from "../assets/keramicko.png";
-import popIMG from "../assets/pop.png";
-import tinIMG from "../assets/tin.png";
+import opaImg from "/public/opa.jpg";
+import keramickoImg from "/keramicko.png";
+import popIMG from "/pop.png";
+import tinIMG from "/tin.png";
 
 export const servicePackages = [
   {

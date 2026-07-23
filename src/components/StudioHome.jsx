@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import beforeImg from "../assets/before.jpg";
-import afterImg from "../assets/after.jpg";
-import koliImg from "../assets/koli.png"; 
-import opaImg from "../assets/opa.jpg"; 
-import deepCleanImg from "../assets/deepClean.png"; 
-import klimaImg from "../assets/klima.png"; 
-import tinImg from "../assets/tin.png"; 
+import beforeImg from "/before.jpg";
+import afterImg from "/after.jpg";
+import koliImg from "/koli.png"; 
+import opaImg from "/opa.jpg"; 
+import deepCleanImg from "/deepClean.png"; 
+import klimaImg from "/klima.png"; 
+import tinImg from "/tin.png"; 
 import { useTranslation } from "react-i18next";
 import TeamSection from "./TeamSection";
 
@@ -296,9 +296,9 @@ export default function StudioHome({
                   alt=""
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-90"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
               </div>
-              <div className="p-5 flex-grow space-y-2 relative z-10 bg-slate-900/20">
+              <div className="p-5 grow space-y-2 relative z-10 bg-slate-900/20">
                 <h3 className="text-sm font-bold text-slate-100 tracking-wide">
                   {t(`std_title_${item.key}`)}
                 </h3>
