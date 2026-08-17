@@ -119,7 +119,7 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
           ))}
         </div>
 
-        <div className="flex items-center absolute -right-20 gap-3 sm:gap-4">
+        <div className="flex items-center absolute right-5 sm: gap-3 sm:gap-4">
           <div className="hidden items-center gap-3 sm:gap-4 md:flex">
             
             <div className="relative z-50 flex items-center space-x-1 rounded-lg border border-slate-850 bg-slate-950 p-1 font-mono text-[10px] font-bold">
