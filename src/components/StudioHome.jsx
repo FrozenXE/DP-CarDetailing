@@ -104,7 +104,6 @@ export default function StudioHome({
         <div className="lg:col-span-7 bg-slate-950 border border-slate-800 p-3 rounded-2xl shadow-2xl relative select-none w-full">
           <div className="relative h-72 sm:h-80 w-full rounded-xl overflow-hidden bg-slate-900">
             
-            {/* AFTER IMAGE - Base layer */}
             <div className="absolute inset-0 w-full h-full">
               <img 
                 src={afterImg}
@@ -116,7 +115,6 @@ export default function StudioHome({
               </span>
             </div>
 
-            {/* BEFORE IMAGE - Masked layer using clip-path */}
             <div 
               className="absolute inset-0 w-full h-full overflow-hidden"
               style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
