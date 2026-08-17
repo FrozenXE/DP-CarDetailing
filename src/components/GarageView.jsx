@@ -23,7 +23,7 @@ export default function GarageView({
   useEffect(() => {
     if (autoOpenAddForm) {
       setShowAddForm(true);
-      setAutoOpexnAddForm(false);
+      setAutoOpenAddForm(false);
     }
   }, [autoOpenAddForm, setAutoOpenAddForm]);
 
