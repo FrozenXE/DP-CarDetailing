@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getServicePackageById } from "../data/servicePackages";
+import { supabase } from "../supabaseClient";
 
 const statusStyles = {
   pending: "bg-amber-400",
