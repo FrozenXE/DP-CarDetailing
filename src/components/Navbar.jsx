@@ -88,7 +88,7 @@ export default function Navbar({ activeTab, setActiveTab, onSignOut, theme, onTo
 
           <div
             onClick={() => navigate("home")}
-            className="flex cursor-pointer items-center gap-2 text-md font-black tracking-wider text-white"
+            className="ml-[50px] flex cursor-pointer items-center gap-2 text-md font-black tracking-wider text-white"
           >
             <img
               src={logo}

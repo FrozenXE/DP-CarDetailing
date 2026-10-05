@@ -47,7 +47,7 @@ export const servicePackages = [
   },
 
   {
-    id: "executive-interior",
+    id: "interior-cleanse",
 
     name: "service.interior.name",
     tagline: "service.interior.tagline",
@@ -69,7 +69,7 @@ export const servicePackages = [
   },
 
   {
-    id: "maintenance-cleanse",
+    id: "studio-cleanse",
 
     name: "service.maintenance.name",
     tagline: "service.maintenance.tagline",
