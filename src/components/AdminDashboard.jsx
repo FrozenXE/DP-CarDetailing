@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { supabase } from "../supabaseClient";
 import { getServicePackageById } from "../data/servicePackages";
+import { supabase } from "../supabaseClient";
 
 const statusStyles = {
   pending: "bg-amber-400",
@@ -30,7 +30,7 @@ export default function AdminDashboard() {
         id, appointment_date, arrival_time_slot, status, special_instructions, service_id,
         profiles (full_name, phone),
         vehicles (year, make, model)
-      `,
+      `
       )
       .order("appointment_date", { ascending: true });
 
@@ -78,12 +78,16 @@ export default function AdminDashboard() {
     }
   };
 
-  const activeBookings = bookings.filter((b) => b.status !== "completed");
-  const completedBookings = bookings.filter((b) => b.status === "completed");
+  const activeBookings = bookings.filter(
+    (b) => b.status !== "completed" && b.status !== "cancelled"
+  );
+  const completedBookings = bookings.filter(
+    (b) => b.status === "completed" || b.status === "cancelled"
+  );
 
   const renderTable = (dataList) => (
     <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 overflow-x-auto">
-      <table className="min-w-[640px] w-full text-left">
+      <table className="min-w-[640px] w-full text-left whitespace-nowrap">
         <thead>
           <tr className="text-slate-500 text-[10px] uppercase tracking-widest font-bold">
             <th className="p-3">Client</th>

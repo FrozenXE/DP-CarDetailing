@@ -79,5 +79,12 @@ export function useUserData() {
     return () => subscription?.unsubscribe();
   }, []);
 
-  return { user, fullName, vehicleCount, bookingCount, isAdmin, loading };
+  return {
+    user,
+    fullName,
+    vehicleCount,
+    bookingCount,
+    isAdmin,
+    loading,
+  };
 }

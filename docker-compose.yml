@@ -1,0 +1,7 @@
+services:
+  frontend:
+    image: nginx:1.27
+    cpus: 0.5
+    mem_limit: 512m
+    volumes:
+      - ./dist:/usr/share/nginx/html:ro

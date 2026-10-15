@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import beforeImg from "../assets/before.png";
-import afterImg from "../assets/after.png";
+import beforeImg from "/before.jpg";
+import afterImg from "/after.jpg";
+import koliImg from "/koli.png"; 
+import opaImg from "/opa.jpg"; 
+import deepCleanImg from "/deepClean.png"; 
+import klimaImg from "/klima.png"; 
+import tinImg from "/tin.png"; 
 import { useTranslation } from "react-i18next";
 import TeamSection from "./TeamSection";
 
@@ -33,9 +38,9 @@ export default function StudioHome({
       <div className="relative overflow-hidden rounded-3xl border border-slate-800 shadow-2xl min-h-125 flex items-center">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1920&q=80"
+            src={koliImg}
             alt="Luxury detailing studio"
-            className="w-full h-full object-cover object-center scale-105 animate-pulse-slow"
+            className="w-full h-full object-cover object-center scale-105"
           />
           <div className="absolute inset-0 bg-linear-to-r from-slate-950 via-slate-950/90 to-slate-900/40"></div>
           <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent"></div>
@@ -55,17 +60,17 @@ export default function StudioHome({
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">
-            {t("hero_title_1", "The Showroom Shine.")} <br />
+          <h1 className="text-4xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-none">
+            {t("hero_title_1", "The Pinnacle of Automotive Curation.")} <br />
             <span className="bg-linear-to-r from-cyan-400 via-teal-400 to-blue-500 bg-clip-text text-transparent font-extrabold">
-              {t("hero_title_2", "Preserved Permanently.")}
+              {t("hero_title_2", "Perfection, Preserved Permanently.")}
             </span>
           </h1>
 
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed drop-shadow-md">
             {t(
               "hero_desc",
-              "Experience ultra-premium automotive detailing. From multi-stage machine paint corrections to certified 9H nanotech ceramic coatings, we treat your vehicle to elite aesthetic and protective standards.",
+              "Experience elite-tier automotive detailing tailored for luxury, exotic, and classic vehicles. From meticulous multi-stage machine paint correction to certified 9H+ nanotech ceramic coatings, we execute every treatment with scientific precision to achieve unmatched optical clarity and permanent surface protection.",
             )}
           </p>
 
@@ -89,6 +94,7 @@ export default function StudioHome({
           </div>
         </div>
       </div>
+
       <div className="space-y-4">
         <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">
           {t("section_dashboard", "Your Personal Dashboard")}
@@ -169,7 +175,6 @@ export default function StudioHome({
         </div>
       </div>
 
-      {/* Interactive Visual Slider Container */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/30 p-6 sm:p-8 rounded-3xl border border-slate-900/80">
         <div className="lg:col-span-5 space-y-4">
           <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded bg-cyan-950 border border-cyan-900 text-cyan-400 uppercase tracking-widest">
@@ -198,7 +203,6 @@ export default function StudioHome({
 
         <div className="lg:col-span-7 bg-slate-950 border border-slate-800 p-3 rounded-2xl shadow-2xl relative select-none w-full">
           <div className="relative h-72 sm:h-80 w-full rounded-xl overflow-hidden bg-slate-900">
-            {/* AFTER IMAGE */}
             <div className="absolute inset-0 w-full h-full">
               <img
                 src={afterImg}
@@ -210,7 +214,6 @@ export default function StudioHome({
               </span>
             </div>
 
-            {/* BEFORE IMAGE */}
             <div
               className="absolute inset-0 w-full h-full overflow-hidden"
               style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
@@ -251,7 +254,6 @@ export default function StudioHome({
         </div>
       </div>
 
-      {/* Studio Core Standards */}
       <div className="space-y-6">
         <div className="text-center max-w-xl mx-auto space-y-1">
           <h2 className="text-2xl font-black text-white tracking-tight">
@@ -268,20 +270,20 @@ export default function StudioHome({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
-              key: "wash",
-              img: "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=400&q=80",
+              key: "polish",
+              img: opaImg,
             },
             {
-              key: "prep",
-              img: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=400&q=80",
+              key: "interior",
+              img: deepCleanImg,
             },
             {
-              key: "experts",
-              img: "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?auto=format&fit=crop&w=400&q=80",
+              key: "hvac",
+              img: klimaImg,
             },
             {
-              key: "bays",
-              img: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=400&q=80",
+              key: "styling", 
+              img: tinImg, 
             },
           ].map((item, idx) => (
             <div
@@ -294,9 +296,9 @@ export default function StudioHome({
                   alt=""
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-90"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
               </div>
-              <div className="p-5 flex-grow space-y-2 relative z-10 bg-slate-900/20">
+              <div className="p-5 grow space-y-2 relative z-10 bg-slate-900/20">
                 <h3 className="text-sm font-bold text-slate-100 tracking-wide">
                   {t(`std_title_${item.key}`)}
                 </h3>
@@ -309,7 +311,6 @@ export default function StudioHome({
         </div>
       </div>
 
-      {/* Testimonials */}
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-900 pb-4">
           <div>
@@ -378,7 +379,6 @@ export default function StudioHome({
         </div>
       </div>
 
-      {/* Accordion FAQ Grid */}
       <div className="space-y-6 max-w-4xl mx-auto">
         <div className="text-center space-y-1">
           <h2 className="text-xl font-black text-white tracking-wide">
@@ -423,7 +423,6 @@ export default function StudioHome({
 
       <TeamSection />
 
-      {/* Lower Call To Action Box */}
       <div className="bg-linear-to-br from-slate-900 to-slate-950 border border-slate-800 p-8 rounded-2xl text-center space-y-6 max-w-3xl mx-auto shadow-2xl relative overflow-hidden">
         <div className="space-y-2 relative z-10">
           <h3 className="text-xl font-black text-white tracking-wide">

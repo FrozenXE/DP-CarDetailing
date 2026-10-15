@@ -19,9 +19,9 @@
     "sign_out_success": "Signed out successfully.",
     "language": "Language",
     "booking_slots_alert": "Now Booking Online Slots For This Week",
-    "hero_title_1": "The Showroom Shine.",
-    "hero_title_2": "Preserved Permanently.",
-    "hero_desc": "Experience ultra-premium automotive detailing. From multi-stage machine paint corrections to certified 9H nanotech ceramic coatings, we treat your vehicle to elite aesthetic and protective standards.",
+    "hero_title_1": "The Pinnacle of Automotive Curation.",
+  "hero_title_2": "Perfection, Preserved Permanently.",
+  "hero_desc": "Experience elite-tier automotive detailing tailored for luxury, exotic, and classic vehicles. From meticulous multi-stage machine paint correction to certified 9H+ nanotech ceramic coatings, we execute every treatment with scientific precision to achieve unmatched optical clarity and permanent surface protection.",
     "btn_book_now": "Book Appointment",
     "btn_book_studio": "Book Studio Appointment",
     "btn_garage_signin": "Access My Garage",
@@ -51,14 +51,14 @@
     "slider_max_label": "AFTER",
     "standards_heading": "The Professional Studio Standard",
     "standards_subheading": "Why premium automotive care requires scientific precision over automated car wash bays.",
-    "std_title_wash": "Three-Bucket Wash Method",
-    "std_desc_wash": "Separate cleaning solution grids and dedicated lower-body mitts isolate grit lines, eliminating wash-induced swirl markings completely.",
-    "std_title_prep": "Chemical Paint Prep",
-    "std_desc_prep": "Advanced active pH iron-dissolving chemical baths pull micro-particulate metallic fallout completely free from automotive clear coats.",
-    "std_title_experts": "Certified Ceramic Experts",
-    "std_desc_experts": "Authorized technicians apply liquid silica quartz layers uniformly to guarantee long-term surface cross-linking strength.",
-    "std_title_bays": "Climate Controlled Bays",
-    "std_desc_bays": "Regulated clean rooms monitor ambient humidity and dust counts to isolate coatings during sensitive initial crystallization hours.",
+    "std_title_polish": "Precision Paint Correction",
+"std_desc_polish": "Multi-stage machine leveling utilizing specialized diminiting abrasives eliminates up to 99% of surface paint swirls, micro-scratches, and deep oxidation structures permanently.",
+    "std_title_interior": "Deep Interior Curation",
+"std_desc_interior": "Meticulous structural detailing utilizing premium mechanical extraction, detailing brushes, and pH-neutral treatments to completely lift embedded dust, grime, and allergens from every crevice.",
+   "std_title_hvac": "Anti-Bacterial HVAC Purification",
+"std_desc_hvac": "Deep cabin climate sanitization combined with micro-particle air filter replacements completely eliminates mold spores, hidden bacterial colonies, and micro-dust from deep within your vehicle's ventilation paths.",
+   "std_title_styling": "Premium Tint & Color Wraps",
+"std_desc_styling": "Transform your vehicle's aesthetic and privacy with precision-cut window tinting and high-grade vinyl wraps applied in dust-free environments for flawless edge adhesion.",
     "reviews_heading": "Client Experiences",
     "reviews_subheading": "Real feedback from verified luxury vehicle and exotic fleet owners.",
     "studio_rating": "4.96/5.00 Studio Rating",
@@ -81,6 +81,13 @@
     "services_badge": "The Treatment Menu",
     "services_title": "Premium Precision Studio Packages",
     "services_desc": "Select from our scientifically balanced paint, coating, and deep interior extraction services.",
+    "services_subtitle": "Every package is engineered for superior depth, durability, and showroom presentation.",
+    "services_highlight_1_title": "Studio-Grade Processes",
+    "services_highlight_1": "Every treatment uses calibrated studio workflows, proven chemistry, and high-precision finishing.",
+    "services_highlight_2_title": "Luxury Vehicle Expertise",
+    "services_highlight_2": "Designed for exotic, classic, and high-end daily drivers with sensitive paintwork.",
+    "services_highlight_3_title": "Documented Results",
+    "services_highlight_3": "We capture condition reports and provide finish recommendations with every booking.",
     "configure_package": "Configure This Package",
     "guarantee_title": "The Apex Structural Care Guarantee",
     "guarantee_desc": "All assignments are insured and digitally documented with professional verification.",
@@ -98,6 +105,7 @@
     "booking_selected_package": "Selected package",
     "booking_vehicle": "Vehicle",
     "booking_select_vehicle": "Select a vehicle",
+    "booking_add_vehicle": "Add a vehicle",
     "booking_package": "Treatment package",
     "booking_date": "Appointment date",
     "booking_time": "Arrival time",
@@ -227,50 +235,50 @@
     "service": {
       "paint": {
         "name": "Multi-Stage Paint Correction",
-        "tagline": "Flawless Mirror Depth Restoration",
-        "duration": "6 - 8 Hours",
-        "badge": "Most Popular",
-
-        "feature1": "Dual-action micro-compound cutting stage",
-        "feature2": "Jeweling polish steps to reveal true optical clarity",
-        "feature3": "Removes up to 90% of clear coat swirls",
-        "feature4": "Synthetic SiO2 gloss sealant barrier"
+          "tagline": "Restore mirror-like clarity — remove swirls, oxidation & holograms",
+          "duration": "6 - 8 Hours",
+          "badge": "Most Popular",
+          "summary": "A precision correction program engineered to restore the original factory finish through progressive compounding, honing, and jeweling polish stages.",
+          "feature1": "Precision multi-stage machine correction for deep optical clarity",
+          "feature2": "Progressive polishing and jeweling for true showroom gloss",
+          "feature3": "Removes surface swirls, light scratches and oxidation",
+          "feature4": "Final finishing sealant to lock in gloss and protection"
       },
 
       "ceramic": {
         "name": "Certified 9H Ceramic Shield",
-        "tagline": "Permanent Nanotech Sacrificial Layer",
-        "duration": "1.5 - 2 Days",
-        "badge": "Elite Protection",
-
-        "feature1": "Full paint decontamination prep",
-        "feature2": "Certified dual-layer SiO2 application",
-        "feature3": "Hydrophobic anti-static properties",
-        "feature4": "Infrared climate curing validation"
+          "tagline": "Ultra-hard nanoceramic protection with long-term gloss retention",
+          "duration": "1.5 - 2 Days",
+          "badge": "Elite Protection",
+          "summary": "An advanced ceramic layering system designed to protect your paint with superior water repellency, UV defense, and extended surface hardness.",
+          "feature1": "Complete surface decontamination and paint prep",
+          "feature2": "Certified multi-layer SiO2 application for 9H surface hardness",
+          "feature3": "Durable hydrophobic, UV and chemical resistance",
+          "feature4": "Controlled infrared curing and inspection warranty"
       },
 
       "interior": {
-        "name": "Executive Interior Suite",
-        "tagline": "Microbial Extraction & Purification",
-        "duration": "3 - 4 Hours",
-        "badge": "Deep Cleanse",
-
-        "feature1": "Hot steam extraction",
-        "feature2": "Sensitive trim detailing",
-        "feature3": "Premium leather conditioning",
-        "feature4": "Ozone odor neutralization"
+        "name": "Exclusive interior cleanse",
+          "tagline": "Detailed cabin rejuvenation & allergen removal",
+          "duration": "3 - 4 Hours",
+          "badge": "Deep Cleanse",
+          "summary": "Deluxe interior reconditioning with advanced extraction, leather care, and air-quality restoration for a calm, luxurious cabin experience.",
+          "feature1": "Hot-water extraction and deep-fiber cleaning",
+          "feature2": "Delicate trim and dash restoration",
+          "feature3": "Premium leather treatment and UV conditioning",
+          "feature4": "Antimicrobial deodorization and odor neutralization"
       },
 
       "maintenance": {
         "name": "Signature Studio Cleanse",
-        "tagline": "Precision Care For Coated Vehicles",
-        "duration": "1.5 Hours",
-        "badge": "Regular Upkeep",
-
-        "feature1": "Three bucket hand wash",
-        "feature2": "Filtered heated air drying",
-        "feature3": "Wheel iron fallout treatment",
-        "feature4": "Interior glass treatment"
+          "tagline": "Meticulous maintenance for preserved finishes and peak gloss",
+          "duration": "1 - 1.5 Hours",
+          "badge": "Regular Upkeep",
+          "summary": "A signature upkeep service designed to preserve ceramic finishes, protect paint, and maintain showroom-ready shine between full treatments.",
+          "feature1": "PH-neutral three-bucket hand wash and decontamination",
+          "feature2": "Safe drying and microfiber finishing",
+          "feature3": "Gentle wheel, brake dust and fallout removal",
+          "feature4": "Quick interior refresh and glass polishing"
       }
     }
   }

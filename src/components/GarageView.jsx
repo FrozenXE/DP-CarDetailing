@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../supabaseClient";
 
-export default function GarageView({ user, setActiveTab, onScheduleSession }) {
+export default function GarageView({
+  user,
+  setActiveTab,
+  onScheduleSession,
+  autoOpenAddForm,
+  setAutoOpenAddForm,
+}) {
   const { t } = useTranslation();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,6 +19,13 @@ export default function GarageView({ user, setActiveTab, onScheduleSession }) {
   const [classification, setClassification] = useState("Sedan");
   const [paintColor, setPaintColor] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+
+  useEffect(() => {
+    if (autoOpenAddForm) {
+      setShowAddForm(true);
+      setAutoOpenAddForm(false);
+    }
+  }, [autoOpenAddForm, setAutoOpenAddForm]);
 
   useEffect(() => {
     async function getVehicles() {
@@ -146,9 +159,13 @@ export default function GarageView({ user, setActiveTab, onScheduleSession }) {
               </span>
               <input
                 type="text"
+                inputMode="numeric"
+                maxLength="4"
                 placeholder="2026"
                 value={year}
-                onChange={(event) => setYear(event.target.value)}
+                onChange={(event) =>
+                  setYear(event.target.value.replace(/\D/g, "").slice(0, 4))
+                }
                 className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs text-white"
               />
             </label>
@@ -160,6 +177,7 @@ export default function GarageView({ user, setActiveTab, onScheduleSession }) {
                 type="text"
                 placeholder="Porsche"
                 required
+                inputMode="text"
                 value={make}
                 onChange={(event) => setMake(event.target.value)}
                 className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs text-white"

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
 export default function AuthView({ setActiveTab }) {
-  // Added 'update-password' as a valid mode option
   const [mode, setMode] = useState("signin");
   const [loading, setLoading] = useState(false);
+  const [resetCooldown, setResetCooldown] = useState(0);
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const [email, setEmail] = useState("");
@@ -12,7 +12,16 @@ export default function AuthView({ setActiveTab }) {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
 
-  // Detect if the user arrived via a reset password redirect link
+  useEffect(() => {
+    if (resetCooldown === 0) return undefined;
+
+    const timer = window.setInterval(() => {
+      setResetCooldown((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [resetCooldown]);
+
   useEffect(() => {
     const handleRecoverySession = async () => {
       // Check if the URL hash contains the access token or if mode is passed in query string
@@ -24,7 +33,6 @@ export default function AuthView({ setActiveTab }) {
         searchParams.get("mode") === "update-password"
       ) {
         // Supabase automatically signs the user in temporarily when clicking a valid reset link.
-        // Let's verify if an active session exists.
         const {
           data: { session },
         } = await supabase.auth.getSession();
@@ -101,7 +109,7 @@ export default function AuthView({ setActiveTab }) {
         const { error: resetError } = await supabase.auth.resetPasswordForEmail(
           email,
           {
-            redirectTo: `${window.location.origin}`, // Redirecting directly back to core origin
+            redirectTo: `${window.location.origin}/auth`,
           },
         );
 
@@ -111,9 +119,10 @@ export default function AuthView({ setActiveTab }) {
           type: "success",
           text: "Password reset link sent! Check your email for instructions.",
         });
+        setResetCooldown(60);
         setEmail("");
       } else if (mode === "update-password") {
-        // Core execution to update password for the current recovery session user
+        // update password for the current recovery session user
         const { error: updateError } = await supabase.auth.updateUser({
           password: password,
         });
@@ -176,7 +185,6 @@ export default function AuthView({ setActiveTab }) {
       )}
 
       <div className="bg-linear-to-b from-slate-900 to-slate-950 border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-        {/* Hide default navigation tabs if we are in forced update-password flow */}
         {mode !== "update-password" && (
           <div className="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-900 mb-6 font-mono text-[10px] font-bold">
             <button
@@ -235,11 +243,15 @@ export default function AuthView({ setActiveTab }) {
                   Mobile Contact Number *
                 </label>
                 <input
-                  type="tel"
+                  type="text"
+                  inputMode="numeric"
                   required
                   placeholder="(555) 019-2834"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    const numbersOnly = e.target.value.replace(/\D/g, "");
+                    setPhone(numbersOnly);
+                  }}
                   className="w-full bg-slate-950 border border-slate-850 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-cyan-400 text-white"
                   disabled={loading}
                 />
@@ -303,15 +315,17 @@ export default function AuthView({ setActiveTab }) {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || (mode === "reset" && resetCooldown > 0)}
             className="w-full bg-linear-to-r from-cyan-400 to-blue-500 text-slate-950 font-black py-3 rounded-xl text-xs uppercase tracking-widest mt-6 cursor-pointer hover:shadow-lg hover:shadow-cyan-500/10 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading
               ? "Processing Gateway..."
               : mode === "signup"
                 ? "Initialize Studio Account"
-                : mode === "reset"
-                  ? "Send Reset Link"
+              : mode === "reset"
+                  ? resetCooldown > 0
+                    ? `Try again in ${resetCooldown}s`
+                    : "Send Reset Link"
                   : mode === "update-password"
                     ? "Update Master Password"
                     : "Authenticate Gateway"}

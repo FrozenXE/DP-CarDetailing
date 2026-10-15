@@ -24,6 +24,7 @@ export default function ReservationsView({
   setSelectedPackageId,
   autoOpenWizard,
   setAutoOpenWizard,
+  onAddVehicle,
 }) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -273,7 +274,13 @@ export default function ReservationsView({
               </span>
               <select
                 value={selectedVehicle}
-                onChange={(event) => setSelectedVehicle(event.target.value)}
+                onChange={(event) => {
+                  if (event.target.value === "add-vehicle") {
+                    onAddVehicle();
+                    return;
+                  }
+                  setSelectedVehicle(event.target.value);
+                }}
                 className="w-full cursor-pointer rounded-xl border border-slate-800 bg-slate-950 px-3 py-2.5 text-xs text-white"
               >
                 <option value="" disabled>
@@ -284,6 +291,9 @@ export default function ReservationsView({
                     {vehicle.year} {vehicle.make} {vehicle.model}
                   </option>
                 ))}
+                <option value="add-vehicle">
+                  + {t("booking_add_vehicle", "Add a vehicle")}
+                </option>
               </select>
             </label>
             <label className="space-y-1">

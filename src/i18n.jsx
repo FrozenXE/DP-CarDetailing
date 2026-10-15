@@ -8,10 +8,10 @@ i18n.use(initReactI18next).init({
     en: enTranslations,
     mk: mkTranslations,
   },
-  lng: localStorage.getItem("app_lang") || "en", // Persist choice across refreshes
+  lng: localStorage.getItem("app_lang") || "en", 
   fallbackLng: "en",
   interpolation: {
-    escapeValue: false, // React already safeguards against XSS
+    escapeValue: false, 
   },
 });
 

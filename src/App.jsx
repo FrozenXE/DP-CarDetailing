@@ -13,6 +13,7 @@ import ContactView from "./components/ContactView";
 import PrivacyPolicyView from "./components/PrivacyPolicyView";
 import StoragePolicyView from "./components/StoragePolicyView";
 import Footer from "./components/Footer";
+import PageIntro from "./components/PageIntro";
 import { useUserData } from "./hooks/useUserData";
 
 const pathToTab = (pathname) => {
@@ -57,33 +58,66 @@ const tabToPath = {
 };
 
 export default function App() {
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("app_theme");
+    return savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+  });
+  const [showIntro, setShowIntro] = useState(true);
+  const [hideApp, setHideApp] = useState(true);
   const [activeTab, setActiveTab] = useState(() =>
     pathToTab(window.location.pathname),
   );
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const [autoOpenWizard, setAutoOpenWizard] = useState(false);
+  const [autoOpenGarageForm, setAutoOpenGarageForm] = useState(false);
   const { user, vehicleCount, bookingCount, isAdmin } = useUserData();
 
   useEffect(() => {
+    const revealApp = window.setTimeout(() => setHideApp(false), 1300);
+    return () => window.clearTimeout(revealApp);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("app_theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  };
+
+  useEffect(() => {
+    const handleBrowserNavigation = () => {
+      setActiveTab(pathToTab(window.location.pathname));
+    };
+
+    window.addEventListener("popstate", handleBrowserNavigation);
+
     const hash = window.location.hash;
     const searchParams = new URLSearchParams(window.location.search);
+    const openRecovery = () => {
+      const recoveryUrl = `${tabToPath.auth}${window.location.search}${window.location.hash}`;
+      window.history.replaceState({}, "", recoveryUrl);
+      setActiveTab("auth");
+    };
 
     if (
       hash.includes("type=recovery") ||
       searchParams.get("mode") === "update-password"
     ) {
-      navigateTab("auth");
+      openRecovery();
     }
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
-        navigateTab("auth");
+        openRecovery();
       }
     });
 
     return () => {
+      window.removeEventListener("popstate", handleBrowserNavigation);
       subscription.unsubscribe();
     };
   }, []);
@@ -96,6 +130,7 @@ export default function App() {
         : window.history.pushState;
       method.call(window.history, {}, "", path);
     }
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     setActiveTab(tab);
   };
 
@@ -116,16 +151,26 @@ export default function App() {
     navigateTab("bookings");
   };
 
+  const handleAddVehicleForBooking = () => {
+    setAutoOpenGarageForm(true);
+    navigateTab("garage");
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 font-sans antialiased text-slate-200">
+    <div
+      className={`min-h-screen bg-slate-950 font-sans antialiased text-slate-200${hideApp ? " app-shell--loading" : ""}`}
+    >
+      {showIntro && <PageIntro onComplete={() => { setShowIntro(false); setHideApp(false); }} />}
       <Navbar
         activeTab={activeTab}
         setActiveTab={navigateTab}
         onSignOut={handleSignOut}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       <main
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 page-transition"
+        className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-2 py-8 page-transition"
         key={activeTab}
       >
         {activeTab === "home" && (
@@ -146,6 +191,8 @@ export default function App() {
             user={user}
             setActiveTab={navigateTab}
             onScheduleSession={handleOpenBookingWizard}
+            autoOpenAddForm={autoOpenGarageForm}
+            setAutoOpenAddForm={setAutoOpenGarageForm}
           />
         )}
 
@@ -157,6 +204,7 @@ export default function App() {
             setSelectedPackageId={setSelectedPackageId}
             autoOpenWizard={autoOpenWizard}
             setAutoOpenWizard={setAutoOpenWizard}
+            onAddVehicle={handleAddVehicleForBooking}
           />
         )}
 
